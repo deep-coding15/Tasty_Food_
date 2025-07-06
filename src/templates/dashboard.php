@@ -1,7 +1,7 @@
 <?php $title = 'Tasty Food - Table des Plats'; ?>
 
 <?php ob_start(); ?>
-<link rel="stylesheet" href="../styles/dashboard.css">
+<link rel="stylesheet" href="../../styles/dashboard.css">
 <main>
     <section id="nav-links">
         <div>

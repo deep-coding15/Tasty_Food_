@@ -13,12 +13,12 @@
 <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <nav class="space-x-6 hidden md:flex">
-            <a href="index.html" class="text-gray-600 hover:text-blue-600">Accueil</a>
-            <a href="menu.html" class="text-gray-600 hover:text-blue-600">Menu</a>
-            <a href="reservation.html" class="text-gray-600 hover:text-blue-600">Réservation</a>
-            <a href="livraison.html" class="text-gray-600 hover:text-blue-600">Livraison</a>
-            <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a>
-            <a id="connexion" class="text-gray-600 hover:text-blue-600" href="connexion.html">Connexion</a>           
+            <a href="index.html" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
+            <a href="menu.html" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
+            <a href="reservation.html" class="text-gray-600 hover:text-blue-600 flex-1">Réservation</a>
+            <a href="livraison.html" class="text-gray-600 hover:text-blue-600 flex-1">Livraison</a>
+            <a href="contact.html" class="text-gray-600 hover:text-blue-600 flex-1">Contact</a>
+            <a id="connexion" class="text-gray-600 hover:text-blue-600 flex-1" href="connexion.html">Connexion</a>           
         </nav>
         <!-- bouton hamburger visible sur mobile (petits écrans)-->
         <button id="menu-toggle" class="md:hidden text-gray-600 focus:outline-none">
@@ -54,9 +54,45 @@
         });
   </script>
 </body>
-<footer class="bg-gray-800 text-white py-8">
+<!-- <footer class="bg-gray-800 text-white py-8">
     Tasty - Food Tous droits reserves
-</footer>
+</footer> -->
+<footer class="bg-gray-800 text-white py-3 h-fit
+    fixed bottom-0 left-0 w-full ">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      
+      <!-- Logo ou titre -->
+      <div class="text-lg font-semibold">Tasty Food</div>
+      
+      <!-- Liens -->
+      <div class="flex space-x-6 text-sm">
+        <a href="#" class="hover:text-gray-300 transition">Accueil</a>
+        <a href="#" class="hover:text-gray-300 transition">À propos</a>
+        <a href="#" class="hover:text-gray-300 transition">Contact</a>
+        <a href="#" class="hover:text-gray-300 transition">FAQ</a>
+      </div>
+      
+      <!-- Réseaux sociaux -->
+      <div class="flex space-x-4">
+        <a href="#" aria-label="Facebook" class="hover:text-blue-400">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M22 12...Z" /> <!-- remplace ce path par une vraie icône -->
+          </svg>
+        </a>
+        <a href="#" aria-label="Twitter" class="hover:text-blue-300">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M24 4.5...Z" />
+          </svg>
+        </a>
+      </div>
+    </div>
 
+    <!-- Copyright -->
+    <div class="text-center mt-6 text-sm text-gray-400">
+      © 2025 Tasty Food. Tous droits réservés.
+    </div>
+  </div>
+</footer>
 
 </html>
