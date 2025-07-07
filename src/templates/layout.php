@@ -19,7 +19,7 @@
 </head>
 
 
-<body class="flex flex-col space-y-4">
+<body class="flex flex-col space-y-4 scroll-smooth">
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
@@ -50,7 +50,7 @@
 
   </header>
 
-  <main class="pb-32">
+  <main class="pb-48">
     <?= $content ?>
   </main>
 

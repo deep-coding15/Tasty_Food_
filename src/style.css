@@ -61,7 +61,7 @@ header li{
 .cart{
     background-color: rgb(129, 129, 190);
     border-radius: 10px;
-    color: red;
+    color: rgb(255, 255, 255);
     position: relative;
     box-shadow: 10px 10px 10px rgb(129, 129, 102);
     max-width: 400px;
