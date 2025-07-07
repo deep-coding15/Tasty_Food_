@@ -144,27 +144,28 @@ class PlatRepository
             $this->database = new PDO('mysql:host=localhost;dbname=restaurant_tasty_food;charset=utf8', 'root', '');
         }
     }
-    public function getPlat(string $identifier) : Plat|null {
+    public function getPlat(int $identifier) : Plat|null {
         $this->dbConnect();
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats 
-                WHERE id_plat = :id";
+                WHERE id_plat = ?";
         $statement = $this->database->prepare($sql);
         $statement->execute([
-            ':id' => $identifier
+            $identifier
         ]);
 
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            $description = ($data["description"]) ? $data["description"] : '';
             return new Plat(
                 $data['id_plat'],
                 $data['nom_plat'],
-                $data['description'],
+                $description,
                 $data['img_plats'],
-                $data['created_at'],
-                $data['updated_at'],
-                $data['deleted_at'],
+                new DateTime($data['created_at']),
+                new DateTime($data['updated_at']),
+                new DateTime($data['deleted_at']),
                 $data['type_plats'],
                 (float) $data['prix_plats'],
             );

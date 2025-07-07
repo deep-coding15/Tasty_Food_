@@ -1,5 +1,5 @@
 <?php
-require_once('src/models/plats.php');
+require_once(__DIR__ . '/../models/plats.php');
 
 function homepage()
 {
@@ -7,4 +7,8 @@ function homepage()
     $plats = $platRepository->getPlats();
 
     require('templates/homepage.php');
+}
+
+function seePlat(int $id){
+    
 }
