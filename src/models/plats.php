@@ -1,4 +1,6 @@
 <?php
+
+    require_once __DIR__ ."/../config.php";
 class Plat{
     private int $id_plat;
     private string $nom_plat;
@@ -23,7 +25,7 @@ class Plat{
         $this->id_plat = $id_plat;
         $this->nom_plat = $nom_plat;
         $this->description = $description;
-        $this->img_plat = __DIR__ . '../data/uploads/' . $img_plats;
+        $this->img_plat = BASE_URL . '/data/Plats/' . $img_plats;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->deleted_at = $deleted_at;
@@ -65,6 +67,10 @@ class Plat{
 
     public function setImgPlat(string $img_plat): void {
         $this->img_plat = $img_plat;
+    }
+
+    public function getRealImgPlat(){
+        return BASE_URL . '/data/Plats/' . $this->img_plat;
     }
 
     // description
@@ -182,6 +188,7 @@ class PlatRepository
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
             $description = ($data["description"]) ? $data["description"] : '';
+
             $plat = new Plat(
                 $data['id_plat'],
                 $data['nom_plat'],

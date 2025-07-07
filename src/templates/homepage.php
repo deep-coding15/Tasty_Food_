@@ -1,6 +1,7 @@
 <?php $title = 'Tasty Food - Accueil'; ?>
 <?php 
-    require_once '../models/plats.php'; 
+    require_once __DIR__ . '/../models/plats.php'; 
+    require_once __DIR__ .'/../config.php';
     $platRepository = new PlatRepository();
 ?>
 
@@ -28,7 +29,7 @@
             foreach ($plats as $plat) : 
         ?>
             <div class="cart min-w-1/4 min-h-64">
-                <img src="<?=$plat->getImgPlat()?>" alt="" class="min-w-[100px] min-h-[100px] max-w-[110px] max-h-[110px]">
+                <img src="<?=$plat->getImgPlat()?>" alt="">
                 <p><?=$plat->getNomPlat()?></p>
                 <p><?=$plat->getPrixPlat()?> DH</p>
                 <a href="#">See Profile</a>

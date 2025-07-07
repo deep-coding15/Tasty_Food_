@@ -21,7 +21,7 @@ header nav{
 header ul{
     display: inline-flex;
     width: 90vw;
-    /* gap: 10px; */
+    
     gap: 10px;
 }
 a{
@@ -66,16 +66,16 @@ header li{
     box-shadow: 10px 10px 10px rgb(129, 129, 102);
     max-width: 400px;
     max-height: 400px;
-}
+} 
 
 /***********************TABLEAUX*******************************/
-thead td{
+/* thead td{
     background-color: #efa;
     padding: 5px;
     border-radius: 7px;
     min-width: 100px;
     text-align: center;
-}
+} */
 
 
 /**********************FOOTER*******************************/
