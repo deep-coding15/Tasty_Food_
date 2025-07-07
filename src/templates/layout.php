@@ -19,7 +19,7 @@
 </head>
 
 
-<body class="flex flex-col ">
+<body class="flex flex-col space-y-4">
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
@@ -49,13 +49,15 @@
     </div>
 
   </header>
-  <div>
+
+  <main class="pb-32">
     <?= $content ?>
-  </div>
+  </main>
 
+  <!-- <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0
+     w-full "> -->
+  <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700">
 
-  <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0
-     w-full ">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
 

@@ -21,7 +21,8 @@ $platRepository = new PlatRepository();
 </section>
 
 <section>
-    <h2 class="text-2xl font-bold">Retrouvez les plats d'accompagnements pour vos repas et savourez notre cuisine !</h2>
+    <h2 class="text-2xl font-bold">Retrouvez les plats d'accompagnements pour vos repas et savourez notre cuisine !
+    </h2>
 
     <div class="carts grid grid-cols-3">
         <?php
@@ -80,6 +81,7 @@ $id_cible = isset($_GET['id']) ? $_GET['id'] : null;
         }
     </script>
 <?php endif; ?>
+
 
 <?php $content = ob_get_clean(); ?>
 
