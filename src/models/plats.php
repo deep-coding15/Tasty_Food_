@@ -1,4 +1,6 @@
 <?php
+
+    require_once __DIR__ ."/../config.php";
 class Plat{
     private int $id_plat;
     private string $nom_plat;
@@ -23,7 +25,7 @@ class Plat{
         $this->id_plat = $id_plat;
         $this->nom_plat = $nom_plat;
         $this->description = $description;
-        $this->img_plat = __DIR__ . '../data/uploads/' . $img_plats;
+        $this->img_plat = BASE_URL . '/data/Plats/' . $img_plats;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->deleted_at = $deleted_at;
@@ -65,6 +67,10 @@ class Plat{
 
     public function setImgPlat(string $img_plat): void {
         $this->img_plat = $img_plat;
+    }
+
+    public function getRealImgPlat(){
+        return BASE_URL . '/data/Plats/' . $this->img_plat;
     }
 
     // description
@@ -138,27 +144,28 @@ class PlatRepository
             $this->database = new PDO('mysql:host=localhost;dbname=restaurant_tasty_food;charset=utf8', 'root', '');
         }
     }
-    public function getPlat(string $identifier) : Plat|null {
+    public function getPlat(int $identifier) : Plat|null {
         $this->dbConnect();
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats 
-                WHERE id_plat = :id";
+                WHERE id_plat = ?";
         $statement = $this->database->prepare($sql);
         $statement->execute([
-            ':id' => $identifier
+            $identifier
         ]);
 
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            $description = ($data["description"]) ? $data["description"] : '';
             return new Plat(
                 $data['id_plat'],
                 $data['nom_plat'],
-                $data['description'],
+                $description,
                 $data['img_plats'],
-                $data['created_at'],
-                $data['updated_at'],
-                $data['deleted_at'],
+                new DateTime($data['created_at']),
+                new DateTime($data['updated_at']),
+                new DateTime($data['deleted_at']),
                 $data['type_plats'],
                 (float) $data['prix_plats'],
             );
@@ -182,6 +189,7 @@ class PlatRepository
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
             $description = ($data["description"]) ? $data["description"] : '';
+
             $plat = new Plat(
                 $data['id_plat'],
                 $data['nom_plat'],
