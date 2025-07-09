@@ -1,9 +1,13 @@
+<?php
+session_start();
+$_SESSION['role'] = 'user';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <?php
-  require_once __DIR__ . "/../config.php";
+  require_once __DIR__ . '/../../config/config.php';
   /* ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
   error_reporting(E_ALL); */
@@ -23,7 +27,7 @@
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
-        <a href="index.html" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
+        <a href="?page=default" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
         <a href="menu.html" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
         <a href="reservation.html" class="text-gray-600 hover:text-blue-600 flex-1">Réservation</a>
         <a href="livraison.html" class="text-gray-600 hover:text-blue-600 flex-1">Livraison</a>
@@ -66,7 +70,7 @@
 
         <!-- Liens -->
         <div class="flex space-x-6 text-sm">
-          <a href="#" class="hover:text-gray-300 transition">Accueil</a>
+          <a href="" class="hover:text-gray-300 transition">Accueil</a>
           <a href="#" class="hover:text-gray-300 transition">À propos</a>
           <a href="#" class="hover:text-gray-300 transition">Contact</a>
           <a href="#" class="hover:text-gray-300 transition">FAQ</a>

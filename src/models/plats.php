@@ -1,6 +1,7 @@
 <?php
-
-    require_once __DIR__ ."/../config.php";
+    require_once __DIR__ ."/../include/SecureSession.php"; //A mettre en place apres avoir fini les plats
+    require_once __DIR__ ."/../../config/config.php";
+    require_once __DIR__ ."/../../config/database.php";
 class Plat{
     private int $id_plat;
     private string $nom_plat;
@@ -25,7 +26,7 @@ class Plat{
         $this->id_plat = $id_plat;
         $this->nom_plat = $nom_plat;
         $this->description = $description;
-        $this->img_plat = BASE_URL . '/data/Plats/' . $img_plats;
+        $this->img_plat = BASE_URL . '/data/Plats/Images/' . $img_plats;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->deleted_at = $deleted_at;
@@ -70,7 +71,7 @@ class Plat{
     }
 
     public function getRealImgPlat(){
-        return BASE_URL . '/data/Plats/' . $this->img_plat;
+        return BASE_URL . '/data/Plats/Images/' . $this->img_plat;
     }
 
     // description
@@ -134,22 +135,41 @@ class Plat{
 
 }
 
+require_once __DIR__ . '/../../config/api_images.php';
 class PlatRepository
 {
-    public ?PDO $database = null;
+    /**
+     * Elle sert à accéder à la connexion partagée dans chaque instance de PlatRepository.
+     * @var 
+     */
+    public ?Database $database = null; 
 
-    public function dbConnect()
-    {
-        if( $this->database === null ) {
-            $this->database = new PDO('mysql:host=localhost;dbname=restaurant_tasty_food;charset=utf8', 'root', '');
+    /**
+     * Pour utiliser une connexion partagée (singleton) dans PlatRepository, 
+     * Il faut déclarer une propriété statique pour la base de données et l’utiliser dans le constructeur.
+     * @var 
+     */
+    private static ?Database $sharedDatabase = null; // Ajoute cette ligne
+
+    public function __construct(){
+        if (self::$sharedDatabase === null) {
+            self::$sharedDatabase = new Database();
         }
+        $this->database = self::$sharedDatabase;
     }
+
+    public function setImagesByAPI(){
+        $imagesApi = new ImagesApi();
+        $imagesApi->getImagesPlat();
+    }
+
     public function getPlat(int $identifier) : Plat|null {
-        $this->dbConnect();
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats 
                 WHERE id_plat = ?";
-        $statement = $this->database->prepare($sql);
+
+        $pdo = $this->database->getConnection();
+        $statement = $pdo->prepare($sql);
         $statement->execute([
             $identifier
         ]);
@@ -157,18 +177,7 @@ class PlatRepository
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
-            $description = ($data["description"]) ? $data["description"] : '';
-            return new Plat(
-                $data['id_plat'],
-                $data['nom_plat'],
-                $description,
-                $data['img_plats'],
-                new DateTime($data['created_at']),
-                new DateTime($data['updated_at']),
-                new DateTime($data['deleted_at']),
-                $data['type_plats'],
-                (float) $data['prix_plats'],
-            );
+            return self::fetchData($data);
         }
 
         return null;
@@ -177,35 +186,113 @@ class PlatRepository
 
     public function getPlats() : array 
     {
-        $this->dbConnect();
 
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats";
 
-        $statement = $this->database->prepare($sql);
+        $pdo = $this->database->getConnection();
+        $statement = $pdo->prepare($sql);
         $statement->execute([]);
 
 
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
-            $description = ($data["description"]) ? $data["description"] : '';
-
-            $plat = new Plat(
-                $data['id_plat'],
-                $data['nom_plat'],
-                $description,
-                $data['img_plats'],
-                new DateTime($data['created_at']),
-                new DateTime($data['updated_at']),
-                new DateTime($data['deleted_at']),
-                $data['type_plats'],
-                (float) $data['prix_plats'],
-            );
+            $plat = self::fetchData($data);
 
             $plats[] = $plat;
         }
-
+        $this->setImagesByAPI();
         return $plats;
     }
+
+    /**
+     * This function return an array of plats that it sorted by the id of the type of the plat
+     * 1 - Accompagnements
+     * 2 - Desserts
+     * 3 - Entrees
+     * 4 - Plat de resistance
+     * 5 - Boissons
+     * 6 - Default
+     */
+    function getPlatsByType(int $type_id)
+    {
+        $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_id = :type_id";
+        
+        $pdo = $this->database->getConnection();
+        $statement = $pdo->prepare($sql);
+        $statement->execute([
+            ":type_id"=> $type_id
+        ]);
+        
+        $plats = [];
+        while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
+            $plat = self::fetchData($data);
+            $plats[] = $plat;
+        }
+        return $plats;
+    }
+
+    /**
+     * This function return an array of plats that it sorted by the name of the type of the plat
+     * 1 - Accompagnements
+     * 2 - Desserts
+     * 3 - Entrees
+     * 4 - Plat de résistance
+     * 5 - Boissons
+     * 6 - Default
+     */
+    function getPlatsByTypeName(string $type_name)
+    {
+        $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_nom = :type_nom";
+        
+        $pdo = $this->database->getConnection();
+        $statement = $pdo->prepare($sql);
+        $statement->execute([
+            ":type_nom"=> trim($type_name),
+        ]);
+        
+        $plats = [];
+        while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
+            $plat = self::fetchData($data);
+            $plats[] = $plat;
+        }
+        return $plats;
+    }
+    
+
+    /**
+     * This function is to fetch a single data from the result of the database query
+     * @param array $data
+     * @return Plat
+     */
+    private function fetchData(array $data){
+        //$description = ($data["description"]) ? $data["description"] : '';
+        $nom_plat = !empty($data['nom_plat']) ? $data['nom_plat'] : 'Unnamed Plat';
+        $description = !empty($data["description"]) ? $data["description"] : '';
+        $img_plats = !empty($data["img_plats"]) ? $data["img_plats"] : 'default.jpg';
+
+        // Gestion des dates nulles ou vides
+        $created_at = !empty($data['created_at']) ? new DateTime($data['created_at']) : new DateTime();
+        $updated_at = !empty($data['updated_at']) ? new DateTime($data['updated_at']) : new DateTime();
+        $deleted_at = !empty($data['deleted_at']) ? new DateTime($data['deleted_at']) : new DateTime();
+
+        $type_plats = !empty($data['type_plats']) ? $data['type_plats'] : '';
+        $prix_plats = isset($data['prix_plats']) ? (float)$data['prix_plats'] : 0.0;
+
+
+        $plat = new Plat(
+            (int)$data['id_plat'],
+            $data['nom_plat'],
+            $description,
+            $img_plats,
+            $created_at,
+            $updated_at,
+            $deleted_at,
+            $type_plats,
+            $prix_plats,
+        );
+        return $plat;
+    }
+
 }
 
