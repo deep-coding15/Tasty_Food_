@@ -26,7 +26,7 @@ class Plat{
         $this->id_plat = $id_plat;
         $this->nom_plat = $nom_plat;
         $this->description = $description;
-        $this->img_plat = BASE_URL . '/data/Plats/' . $img_plats;
+        $this->img_plat = BASE_URL . '/data/Plats/Images/' . $img_plats;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->deleted_at = $deleted_at;
@@ -71,7 +71,7 @@ class Plat{
     }
 
     public function getRealImgPlat(){
-        return BASE_URL . '/data/Plats/' . $this->img_plat;
+        return BASE_URL . '/data/Plats/Images/' . $this->img_plat;
     }
 
     // description
@@ -135,6 +135,7 @@ class Plat{
 
 }
 
+require_once __DIR__ . '/../../config/api_images.php';
 class PlatRepository
 {
     /**
@@ -155,6 +156,11 @@ class PlatRepository
             self::$sharedDatabase = new Database();
         }
         $this->database = self::$sharedDatabase;
+    }
+
+    public function setImagesByAPI(){
+        $imagesApi = new ImagesApi();
+        $imagesApi->getImagesPlat();
     }
 
     public function getPlat(int $identifier) : Plat|null {
@@ -195,7 +201,7 @@ class PlatRepository
 
             $plats[] = $plat;
         }
-
+        $this->setImagesByAPI();
         return $plats;
     }
 

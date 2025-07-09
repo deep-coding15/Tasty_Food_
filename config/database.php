@@ -10,7 +10,7 @@ class Database{
     }
 
     /**
-     * THis function can connect to a database. The default values are : 
+     * This function is a private function can connect to a database. The default values are : 
      * @param string $host = 'localhost'
      * @param string $dbname = 'restaurant_tasty_food'
      * @param string $username = 'root'
@@ -25,6 +25,14 @@ class Database{
         return $this->connection;
     }
 
+    /**
+     * THis function can connect to a database. The default values are : 
+     * @param string $host = 'localhost'
+     * @param string $dbname = 'restaurant_tasty_food'
+     * @param string $username = 'root'
+     * @param string $password = ''
+     * @return void
+     */
     public function getConnection () : PDO | null{
         return $this->connection;
     }
