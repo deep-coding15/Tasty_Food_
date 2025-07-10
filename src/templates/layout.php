@@ -27,11 +27,11 @@ $_SESSION['role'] = 'user';
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
-        <a href="?page=default" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
-        <a href="menu.html" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
+        <a href="menu.php?page=default" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
+        <a href="menu.php" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
         <a href="reservation.html" class="text-gray-600 hover:text-blue-600 flex-1">Réservation</a>
         <a href="livraison.html" class="text-gray-600 hover:text-blue-600 flex-1">Livraison</a>
-        <a href="contact.html" class="text-gray-600 hover:text-blue-600 flex-1">Contact</a>
+        <a href="contact.php" class="text-gray-600 hover:text-blue-600 flex-1">Contact</a>
         <a id="connexion" class="text-gray-600 hover:text-blue-600 flex-1" href="connexion.html">Connexion</a>
       </nav>
       <!-- bouton hamburger visible sur mobile (petits écrans)-->
@@ -44,11 +44,11 @@ $_SESSION['role'] = 'user';
 
     <!-- uniquement visible sur mobile -->
     <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 space-y-2">
-      <a href="index.html" class="block text-gray-700 hover:text-blue-600">Accueil</a>
-      <a href="menu.html" class="block text-gray-700 hover:text-blue-600">Menu</a>
+      <a href="menu.php?page=default" class="block text-gray-700 hover:text-blue-600">Accueil</a>
+      <a href="menu.php" class="block text-gray-700 hover:text-blue-600">Menu</a>
       <a href="reservation.html" class="block text-gray-700 hover:text-blue-600">Réservation</a>
       <a href="livraison.html" class="block text-gray-700 hover:text-blue-600">Livraison</a>
-      <a href="contact.html" class="block text-gray-700 hover:text-blue-600">Contact</a>
+      <a href="contact.php" class="block text-gray-700 hover:text-blue-600">Contact</a>
       <a id="connexion" class="block text-gray-700 hover:text-blue-600" href="connexion.html">Connexion</a>
     </div>
 
@@ -70,9 +70,9 @@ $_SESSION['role'] = 'user';
 
         <!-- Liens -->
         <div class="flex space-x-6 text-sm">
-          <a href="" class="hover:text-gray-300 transition">Accueil</a>
+          <a href="menu.php" class="hover:text-gray-300 transition">Accueil</a>
           <a href="#" class="hover:text-gray-300 transition">À propos</a>
-          <a href="#" class="hover:text-gray-300 transition">Contact</a>
+          <a href="contact.php" class="hover:text-gray-300 transition">Contact</a>
           <a href="#" class="hover:text-gray-300 transition">FAQ</a>
         </div>
 

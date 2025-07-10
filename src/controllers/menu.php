@@ -1,12 +1,12 @@
 <?php
 require_once(__DIR__ . '/../models/plats.php');
 
-function homepage()
+function menu()
 {
     $platRepository = new PlatRepository();
     $plats = $platRepository->getPlats();
 
-    require('templates/homepage.php');
+    require('templates/menu.php');
 }
 
 function seePlat(int $id){
