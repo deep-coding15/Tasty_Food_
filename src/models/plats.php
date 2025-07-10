@@ -30,7 +30,7 @@ class Plat{
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->deleted_at = $deleted_at;
-        $this->type_menu = $type_plats;
+        $this->type_plats = $type_plats;
         $this->prix_plat = $prix_plats;
         self::$nb_plats++;
     }    
@@ -131,8 +131,28 @@ class Plat{
     public static function getNombrePlats(){
         return self::$nb_plats;
     }
+}
+
+/* enum Statut {
+    case en_attente;
+    case en_cours;
+    case livree;
+    case annulee;
+}
 
 
+ */class Commandes{
+    private int $id_commande;
+    private int $id_client;
+    private DateTime $date_commande;
+    //private Statut $statut; 
+    private float $montant_total;
+}
+
+class PanierPlats{
+    private int $id_commande;
+    private int $id_client;
+    private array $plats;
 }
 
 require_once __DIR__ . '/../../config/api_images.php';
@@ -159,7 +179,7 @@ class PlatRepository
     }
 
     public function setImagesByAPI(){
-        $imagesApi = new ImagesApi();
+        $imagesApi = ImagesApi::getInstance();
         $imagesApi->getImagesPlat();
     }
 

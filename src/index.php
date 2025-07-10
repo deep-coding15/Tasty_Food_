@@ -1,7 +1,7 @@
 <?php
 
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // Nettoie l'URL
-require_once __DIR__ .'/controllers/homepage.php';
+require_once __DIR__ .'/controllers/menu.php';
 switch (true) {
     case str_starts_with($url, '/contact'):
         include 'contact.php';
@@ -14,7 +14,7 @@ switch (true) {
         include 'about.php';
         break;
     default:
-        homepage();
+        menu();
         /* include 'templates/homepage.php'; */
         break;
 }
