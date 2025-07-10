@@ -71,8 +71,8 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
 ?>
 
 <div class="grid grid-cols-1 gap-4">
-    <section class="mb-24 mt-4">
-        <h2 class="text-3xl font-bold text-center mt-[-12] mb-4">
+    <section class="mb-24 mt-12">
+        <h2 class="text-3xl font-bold text-center m-6">
             Des plats faits maison, avec amour, livrés chez vous.
         </h2>
 
@@ -136,27 +136,22 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
                     hidden opacity-0 translate-y-2 transition duration-500 hover:scale-105 ease-out">
                 <?php $plat = $platRepository->getPlat((int) $id_cible); ?>
                 <h2 class="text-center text-xl font-bold text-gray-800"><?= $plat->getNomPlat() ?></h2>
-                <img src="<?= $plat->getImgPlat() ?>" alt="" class="w-full h-96 object-cover mx-auto  rounded-t-2xl">
+                <img src="<?= $plat->getImgPlat() ?>" alt="">
                 <p><?= $plat->getPrixPlat(); ?> DH</p>
                 <p><?= $plat->getDescription() ?></p>
-                <a href="#passez-commande" class="bg-blue-600 text-white font-medium py-2 px-4 rounded
-                    transition hover:duration-700 hover:ease-in-out
-                    hover:bg-blue-700 hover:scale-125 
-                    hover:opacity-90 block justify-center"
-                >
-                        Ajouter au Panier
-                </a>
+                <button class="bg-blue-600 text-white font-medium py-2 px-4 rounded
+                transition hover:duration-700 hover:ease-in-out
+                hover:bg-blue-700 hover:scale-125 
+                hover:opacity-90 block justify-center">
+                    Acheter maintenant
+                </button>
             </div>
         </section>
     </div>
 
 <?php endif; ?>
 
-<section>
-    <form action="">
-        
-    </form>
-</section>
+
 
 
 

@@ -28,41 +28,6 @@ CREATE TABLE IF NOT EXISTS clients (
     deleted_at DATETIME DEFAULT NULL
 );
 
-
-CREATE TABLE  IF NOT EXISTS commandes (
-    id_commande INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    id_client INT UNSIGNED NOT NULL,
-    date_commande DATETIME DEFAULT CURRENT_TIMESTAMP,
-    statut ENUM('en_attente', 'en_cours', 'livree', 'annulee') DEFAULT 'en_attente',
-    montant_total DECIMAL(10,2),
-    moyen_paiement
-    CONSTRAINT fk_commande_clients FOREIGN KEY (id_client) REFERENCES clients(id_client) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE  IF NOT EXISTS paiements (
-    id_paiement_commande INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    id_commande INT UNSIGNED NOT NULL,
-    id_paiement TINYINT UNSIGNED NOT NULL,
-    montant_paye DECIMAL(10,2) NOT NULL,
-    date_paiement DATETIME DEFAULT CURRENT_TIMESTAMP,
-    statut_paiement ENUM('effectué', 'échoué', 'en_attente') DEFAULT 'en_attente',
-
-    FOREIGN KEY (id_commande) REFERENCES commandes(id_commande)
-        ON DELETE CASCADE  ON UPDATE CASCADE,
-    FOREIGN KEY (id_paiement) REFERENCES moyens_paiement(id_paiement)
-        ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS contact (
-    id_contact INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name_user VARCHAR(64) NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    message VARCHAR(64) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-)
-
 CREATE TABLE IF NOT EXISTS roles (
     id_role TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nom_role VARCHAR(30) NOT NULL UNIQUE,
