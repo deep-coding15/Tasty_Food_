@@ -6,7 +6,7 @@ function menu()
     $platRepository = new PlatRepository();
     $plats = $platRepository->getPlats();
 
-    require('templates/menu.php');
+    require(__DIR__ . '/../templates/menu.php');
 }
 
 function seePlat(int $id){

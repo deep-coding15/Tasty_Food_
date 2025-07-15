@@ -152,13 +152,6 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
 
 <?php endif; ?>
 
-<section>
-    <form action="">
-        
-    </form>
-</section>
-
-
 
 
 

@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Si votre projet est dans le dossier /php/TASTY_FOOD_/src
+    RewriteBase /php/TASTY_FOOD_/
+
+    # Ignorer les fichiers et dossiers réels
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Rediriger tout vers index.php
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Désactiver l'indexation des dossiers
+Options -Indexes

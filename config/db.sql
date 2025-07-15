@@ -11,11 +11,11 @@ CREATE TABLE IF NOT EXISTS utilisateur (
         img_profil LIKE '%.svg'
     ),
     email VARCHAR(100) NOT NULL UNIQUE,
+    role ENUM('visiteur', 'client', 'personnel', 'admin') DEFAULT 'visiteur'
     telephone VARCHAR(20) DEFAULT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 -- TABLE clients
 CREATE TABLE IF NOT EXISTS clients (
     id_client INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

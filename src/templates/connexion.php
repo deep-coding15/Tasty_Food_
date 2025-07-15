@@ -141,124 +141,21 @@ document.addEventListener("DOMContentLoaded", function () {
 <?php $content = ob_get_clean(); ?>
 <?php 
 require_once __DIR__ ."/layout.php";
-require_once __DIR__ .'/../../config/database.php';
 
-$database = new Database();
-$pdo = $database->getConnection();
+require __DIR__ .'/../models/utilisateur.php';
+
+$utilisateurRepository = new UtilisateurRepository();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     
     $postData = $_POST;
     if ($postData["objectif"] == "login") {
-        
-
-        if(isset($postData["firstname"]) && trim($postData["firstname"]) != ""
-            && isset($postData["lastname"]) && trim($postData['lastname']) != ""
-            && isset($postData["password"]) && trim($postData["password"]) != ""
-            && isset($postData["email"]) && trim($postData["email"]) != ""
-            && isset($postData["telephone"]) && trim($postData["telephone"]) != ""
-        ) {
-            $lastname = trim($postData["lastname"]);
-            $firstname = trim($postData["firstname"]);
-            $password = trim($postData["password"]);
-            $email = trim($postData["email"]);
-            $telephone = trim($postData["telephone"]);
-
-            $database = new Database();
-            $pdo = $database->getConnection();
-            $image = 'default_profile_photo.jpg';
-            $login = genererLoginUnique($firstname, $lastname, $pdo);
-
-            $sql = "INSERT INTO utilisateur(nom, prenom, login, password, img_profil, email, telephone, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
-            $resultStatus = $stmt->execute([
-                $lastname,
-                $firstname,
-                $login,
-                password_hash($password, PASSWORD_DEFAULT),
-                $image,
-                $email, 
-                $telephone,
-                false
-            ]);
-
-            if($resultStatus) {
-                echo "Vos informations de connection ont été enregistré avec succès";
-            } else {
-                echo "L'enregistrement a échoué";
-            }
-        }
+        $utilisateurRepository->logIn($postData);
     }
     else if ($postData["objectif"] == "signup") {
-        if (isset($postData["password"]) && trim($postData["password"]) != ""
-            && isset($postData["email"]) && trim($postData["email"]) != "") {
-            $password = trim($postData["password"]);
-            $email = trim($postData["email"]);
-
-            if(validerSignup($email, $password)){
-                echo "Vos informations de connection sont corrects";
-            } else {
-                echo "Vos informations de connection ne sont pas corrects";
-            }
-        }
+        $utilisateurRepository->signUp($postData);
     }
 }
 
 
 
-function genererLogin($prenom, $nom) {
-    // Nettoyage de l’entrée : suppression des espaces, accents, etc.
-    $prenom = strtolower(supprimerCaracteresSpeciaux($prenom));
-    $nom = strtolower(supprimerCaracteresSpeciaux($nom));
-    
-    // Création du login : initiale du prénom + nom
-    $login = substr($prenom, 0, 1) . $nom;
-
-    return $login;
-}
-function supprimerCaracteresSpeciaux($texte) {
-    $texte = iconv('UTF-8', 'ASCII//TRANSLIT', $texte); // Enlève les accents
-    $texte = preg_replace('/[^a-zA-Z0-9]/', '', $texte); // Enlève caractères spéciaux
-    return $texte;
-}
-function genererLoginUnique($prenom, $nom, $conn) {
-    $baseLogin = genererLogin($prenom, $nom);
-    $login = $baseLogin;
-    $i = 1;
-
-    // Vérifie dans la base si le login existe déjà
-    while (loginExiste($login, $conn)) {
-        $login = $baseLogin . $i;
-        $i++;
-    }
-
-    return $login;
-}
-
-function loginExiste($login, $conn) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM utilisateur WHERE login = ?");
-    $stmt->execute([$login]);
-    return $stmt->fetchColumn() > 0;
-}
-
-function validerSignup($email, $password) {
-    $sql = "SELECT password FROM utilisateur WHERE email = :email";
-    global $pdo;
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ":email" => $email
-    ]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    
-    //password_verify
-    if ($result && password_verify($password, $result["password"])) {
-        $sql_verify = "UPDATE utilisateur SET is_active = 1 WHERE email = :email";
-        $stmt_update = $pdo->prepare($sql_verify);
-        $stmt_update->execute([
-            ":email" => $email,
-        ]);
-        return true;
-    }
-    return false;
-}
