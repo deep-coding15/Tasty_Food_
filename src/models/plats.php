@@ -41,7 +41,7 @@ class Plat{
         // Exemple : log ou nettoyage
         echo "Le plat '{$this->nom_plat}' a été supprimé.";
     } */
-
+ 
     //Setters && Getters
     // id_plat
     public function getIdPlat(): int {
