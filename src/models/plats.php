@@ -407,8 +407,11 @@ class PlatRepository
             return $stmt->rowCount() > 0; // true si la mise à jour a modifié une ligne
         }
         return false;
-    }   
+    }  
     
-
+    public function supprimer_plat(int $id){
+        $sql = "DELETE FROM plats WHERE id_plat = ?";
+        $stmt = $this->database->executeSqlStatement($sql, [$id]);
+        return $stmt->rowCount() > 0;
+    } 
 }
-

@@ -68,7 +68,7 @@ $platRepository = new PlatRepository();
                                     <a href="<?=BASE_URL.'/src/templates/modifier_plats.php'?>?id=<?=$plat->getIdPlat()?>" class="text-yellow-500 hover:text-yellow-700">Éditer</a>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <a href="" class="text-red-500 hover:text-red-700">Supprimer</a>
+                                    <a href="<?=BASE_URL.'/src/templates/supprimer_plats.php'?>?id=<?=$plat->getIdPlat()?>" class="text-red-500 hover:text-red-700">Supprimer</a>
                                 </td>
                             </tr>
                         <?php $nb++; ?>
