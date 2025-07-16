@@ -1,6 +1,6 @@
 <?php
 
-class Session
+class SecureSession
 {
     //Durée d'inactivité maximale avant expiration (expiration)
     private int $timeOutLastActivity = 0;
@@ -68,6 +68,8 @@ class Session
             header("Location: login.php");
             exit;
         } */
+       //$_SESSION['LOGIN'] = "";
+       $_SESSION['ROLE'] = 'administrateur';
     }
 
     public function set(string $key, $value): void

@@ -56,13 +56,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<section class="flex justify-end text-2xl">
+<section class="flex justify-end text-2xl ">
     <!-- Au debut, log in est visible -->
-    <input type="button" id="choix" value="SIGNUP" class="cursor-pointer rounded px-3 py-2 bg-gray-500 transition duration-500 ease-out hover:scale-105 hover:bg-blue-500"/>
+    <input type="button" id="choix" value="SIGNUP" class="mt-14 ursor-pointer rounded px-3 py-2 bg-gray-500 transition duration-500 ease-out hover:scale-105 hover:bg-blue-500"/>
 </section>
 <section class="w-4/6 mx-auto login">
     
-  <div class="flex flex-col items-center justify-center m-12 w-full">
+  <div class="flex flex-col items-center justify-center mb-24 w-full">
     <h1 class="text-center text-2xl font-medium text-gray-800 mb-6">LOG IN</h1>
     <form action="" method="post"
       class="bg-gray-300 p-8 rounded-3xl shadow-2xl w-full max-w-md space-y-6 transition duration-500 ease-out hover:scale-105
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <section class="w-4/6 mx-auto hidden signup">
     
-  <div class="flex flex-col items-center justify-center m-12 w-full">
+  <div class="flex flex-col items-center justify-center m-12 w-full mb-24">
     <h1 class="text-center text-2xl font-medium text-gray-800 mb-6">SIGN UP</h1>
     <form action="" method="post"
       class="bg-gray-300 p-8 rounded-3xl shadow-2xl w-full max-w-md space-y-6 transition duration-500 ease-out hover:scale-105

@@ -20,7 +20,7 @@ $pages = [
 ];
 ?>
 
-<section id="links">
+<section id="links" class="relative top-16 mt-16">
     <nav>
         <ul class="flex flex-row justify-between w-full">
 
@@ -70,7 +70,7 @@ $pages = [
 $page = $_GET['page'] ?? 'default'; // valeur par défaut
 ?>
 
-<div class="grid grid-cols-1 gap-4">
+<div class="grid grid-cols-1 gap-4 relative top-16 mt-16">
     <section class="mb-24 mt-4">
         <h2 class="text-3xl font-bold text-center mt-[-12] mb-4">
             Des plats faits maison, avec amour, livrés chez vous.
@@ -148,9 +148,10 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
                 </a>
             </div>
         </section>
+    <?php endif; ?>
     </div>
 
-<?php endif; ?>
+
 
 
 

@@ -163,7 +163,7 @@ class PlatRepository
      * @var 
      */
     public ?Database $database = null; 
-
+    private ?PDO $pdo = null;
     /**
      * Pour utiliser une connexion partagée (singleton) dans PlatRepository, 
      * Il faut déclarer une propriété statique pour la base de données et l’utiliser dans le constructeur.
@@ -176,6 +176,7 @@ class PlatRepository
             self::$sharedDatabase = new Database();
         }
         $this->database = self::$sharedDatabase;
+        $this->pdo = $this->database->getConnection();
     }
 
     public function setImagesByAPI(){
@@ -183,16 +184,22 @@ class PlatRepository
         $imagesApi->getImagesPlat();
     }
 
+    public function setImageByAPIById($id){
+        $imagesApi = ImagesApi::getInstance();
+        $imagesApi->getImagePlatById($id);
+    }
+
     public function getPlat(int $identifier) : Plat|null {
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats 
                 WHERE id_plat = ?";
 
-        $pdo = $this->database->getConnection();
+        /* $pdo = $this->database->getConnection();
         $statement = $pdo->prepare($sql);
         $statement->execute([
             $identifier
-        ]);
+        ]); */
+        $statement = self::getConnexion($sql, [$identifier]);
 
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -210,10 +217,7 @@ class PlatRepository
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats";
 
-        $pdo = $this->database->getConnection();
-        $statement = $pdo->prepare($sql);
-        $statement->execute([]);
-
+        $statement = self::getConnexion($sql);
 
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -223,6 +227,35 @@ class PlatRepository
         }
         $this->setImagesByAPI();
         return $plats;
+    }
+
+    private function getConnexion(string $sql, array $params = []){
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($params);
+        return $statement;
+    }
+
+    /**
+     * This function return an array of plats that has been update nearly
+     */
+    function getPlatsByUpdatedDate(){
+        $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
+                FROM plats ORDER BY updated_at DESC";
+        $statement = self::getConnexion($sql);
+        $plats = [];
+        while (($row = $statement->fetch(PDO::FETCH_ASSOC))) {
+            $plat = self::fetchData($row);
+            $plats[] = $plat;
+        }
+        $this->setImagesByAPI();
+        return $plats;
+    }
+
+    private function getTypePlats(int $id_type_plat){
+        $sql = 'SELECT type_plat_nom from type_plat where type_plat_id = :id';
+        $statement = self::getConnexion($sql, [':id' => $id_type_plat]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result['type_plat_nom'];
     }
 
     /**
@@ -238,11 +271,7 @@ class PlatRepository
     {
         $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_id = :type_id";
         
-        $pdo = $this->database->getConnection();
-        $statement = $pdo->prepare($sql);
-        $statement->execute([
-            ":type_id"=> $type_id
-        ]);
+        $statement = self::getConnexion($sql, [":type_id" => $type_id]);
         
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -265,11 +294,7 @@ class PlatRepository
     {
         $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_nom = :type_nom";
         
-        $pdo = $this->database->getConnection();
-        $statement = $pdo->prepare($sql);
-        $statement->execute([
-            ":type_nom"=> trim($type_name),
-        ]);
+        $statement = self::getConnexion($sql, [":type_nom"=> trim($type_name)]);
         
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -308,7 +333,7 @@ class PlatRepository
             $created_at,
             $updated_at,
             $deleted_at,
-            $type_plats,
+            self::getTypePlats($type_plats),
             $prix_plats,
         );
         return $plat;
