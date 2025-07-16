@@ -36,6 +36,9 @@ $platRepository = new PlatRepository();
     <div id="content" class="w-[100%] mx-auto  overflow-auto relative mt-[5%] mb-[10%] pt-16 ml-[10%] -z-5">
         <!-- Table des plats -->
         <section class=" -mt-8 ml-8 flex-1">
+            <div class="flex justify-end text-2xl">
+                <a href="<?=BASE_URL . '/src/templates/ajouter_plats.php'?>" class="btn bg-blue-500 p-2 my-8 ml-8 rounded-xl">Ajouter un plat !</a>
+            </div>
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                 <thead class="bg-blue-500 text-white">
                     <tr>
