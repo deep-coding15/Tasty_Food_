@@ -4,7 +4,7 @@
 
 <div class=" flex flex-col items-center justify-center min-h-screen mt-6 mb-36">
 
-  <form action="add_receipe" class="bg-gray-300 p-8 rounded-3xl shadow-2xl w-fit max-w-md space-y-6 flex-grow" method="post">
+  <form action="add_receipe" class="bg-gray-300 p-8 mt-16 mb-24 rounded-3xl shadow-2xl w-fit max-w-md space-y-6 flex-grow" method="post">
     <h2 class="text-3xl font-bold text-center text-green-500">Ajoutez un plat !</h2>
     <div>
       <label for="name_plat" class="block text-sm font-medium text-black-300">Nom du plat : </label>

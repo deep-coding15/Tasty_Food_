@@ -59,13 +59,13 @@ $platRepository = new PlatRepository();
                                         class="w-24 h-24 object-cover rounded-t-2xl">
                                 </td>
                                 <td class="px-6 py-4"><?=$plat->getNomPlat()?></td>
-                                <td class="px-6 py-4"><?= $plat->getTypePlats()?></td>
+                                <td class="px-6 py-4"><?= $plat->getTypePlat()?></td>
                                 <td class="px-6 py-4"><?=$plat->getPrixPlat()?> DH</td>
                                 <td class="px-6 py-4 text-center">
                                     <a href="?id=<?=$plat->getIdPlat()?>/#plat" class="text-blue-500 hover:text-blue-700">Détails</a>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <a href="" class="text-yellow-500 hover:text-yellow-700">Éditer</a>
+                                    <a href="<?=BASE_URL.'/src/templates/modifier_plats.php'?>?id=<?=$plat->getIdPlat()?>" class="text-yellow-500 hover:text-yellow-700">Éditer</a>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <a href="" class="text-red-500 hover:text-red-700">Supprimer</a>
@@ -90,7 +90,7 @@ $platRepository = new PlatRepository();
         <img src="<?= $plat->getImgPlat() ?>" alt="" class="w-full h-96 object-cover mx-auto  rounded-t-2xl">
         <p><?= $plat->getPrixPlat(); ?> DH</p>
         <p><?= $plat->getDescription() ?></p>
-        <a href="#modifier_plat" class="bg-blue-600 text-white font-medium py-2 px-4 rounded
+        <a href="<?=BASE_URL.'/src/templates/modifier_plats.php'?>?id=<?=$plat->getIdPlat()?>" class="bg-blue-600 text-white font-medium py-2 px-4 rounded
             transition hover:duration-700 hover:ease-in-out
             hover:bg-blue-700 hover:scale-125 
             hover:opacity-90 block justify-center"

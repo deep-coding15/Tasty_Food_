@@ -36,4 +36,14 @@ class Database{
     public function getConnection () : PDO | null{
         return $this->connection;
     }
+
+    /**
+     * This function execute an sql statement and its parameters in form of an array and return the statement
+     * It uses the prepare statement and the execute function to do his work
+     */
+    public function executeSqlStatement(string $sql, array $params = []){
+        $statement = $this->connection->prepare($sql);
+        $statement->execute($params);
+        return $statement;
+    }
 }

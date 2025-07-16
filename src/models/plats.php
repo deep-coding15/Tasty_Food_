@@ -111,7 +111,7 @@ class Plat{
     }
 
     // type_plats
-    public function getTypePlats(): string {
+    public function getTypePlat(): string {
         return $this->type_plats;
     }
 
@@ -130,6 +130,19 @@ class Plat{
 
     public static function getNombrePlats(){
         return self::$nb_plats;
+    }
+
+    public function __toString()
+    {
+        return "Plat: {$this->nom_plat}\n" .
+                "Id: {$this->id_plat}\n" .
+               "Type: {$this->type_plats}\n" .
+               "Prix: {$this->prix_plat} €\n" .
+               "Description: {$this->description}\n" .
+               "Image: {$this->img_plat}\n" . 
+               "Created at: {$this->created_at}\n".
+               "Updated at: {$this->updated_at}\n".
+               "Deleted at: {$this->deleted_at}\n";
     }
 }
 
@@ -163,7 +176,6 @@ class PlatRepository
      * @var 
      */
     public ?Database $database = null; 
-    private ?PDO $pdo = null;
     /**
      * Pour utiliser une connexion partagée (singleton) dans PlatRepository, 
      * Il faut déclarer une propriété statique pour la base de données et l’utiliser dans le constructeur.
@@ -176,7 +188,7 @@ class PlatRepository
             self::$sharedDatabase = new Database();
         }
         $this->database = self::$sharedDatabase;
-        $this->pdo = $this->database->getConnection();
+        //$this->pdo = $this->database->getConnection();
     }
 
     public function setImagesByAPI(){
@@ -199,7 +211,7 @@ class PlatRepository
         $statement->execute([
             $identifier
         ]); */
-        $statement = self::getConnexion($sql, [$identifier]);
+        $statement = $this->database->executeSqlStatement($sql, [$identifier]);
 
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -217,7 +229,7 @@ class PlatRepository
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats";
 
-        $statement = self::getConnexion($sql);
+        $statement = $this->database->executeSqlStatement($sql);
 
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -229,11 +241,11 @@ class PlatRepository
         return $plats;
     }
 
-    private function getConnexion(string $sql, array $params = []){
+    /* private function executeSqlStatement(string $sql, array $params = []){
         $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
         return $statement;
-    }
+    } */
 
     /**
      * This function return an array of plats that has been update nearly
@@ -241,7 +253,8 @@ class PlatRepository
     function getPlatsByUpdatedDate(){
         $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats 
                 FROM plats ORDER BY updated_at DESC";
-        $statement = self::getConnexion($sql);
+        $statement = $this->database->executeSqlStatement($sql);
+        //self::executeSqlStatement($sql);
         $plats = [];
         while (($row = $statement->fetch(PDO::FETCH_ASSOC))) {
             $plat = self::fetchData($row);
@@ -251,9 +264,9 @@ class PlatRepository
         return $plats;
     }
 
-    private function getTypePlats(int $id_type_plat){
+    private function getTypePlat(int $id_type_plat){
         $sql = 'SELECT type_plat_nom from type_plat where type_plat_id = :id';
-        $statement = self::getConnexion($sql, [':id' => $id_type_plat]);
+        $statement = $this->database->executeSqlStatement($sql, [':id' => $id_type_plat]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         return $result['type_plat_nom'];
     }
@@ -271,7 +284,7 @@ class PlatRepository
     {
         $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_id = :type_id";
         
-        $statement = self::getConnexion($sql, [":type_id" => $type_id]);
+        $statement = $this->database->executeSqlStatement($sql, [":type_id" => $type_id]);
         
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -294,7 +307,7 @@ class PlatRepository
     {
         $sql = "SELECT * FROM plats p JOIN type_plat tp ON  p.type_plats = tp.type_plat_id WHERE tp.type_plat_nom = :type_nom";
         
-        $statement = self::getConnexion($sql, [":type_nom"=> trim($type_name)]);
+        $statement = $this->database->executeSqlStatement($sql, [":type_nom"=> trim($type_name)]);
         
         $plats = [];
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
@@ -333,11 +346,69 @@ class PlatRepository
             $created_at,
             $updated_at,
             $deleted_at,
-            self::getTypePlats($type_plats),
+            self::getTypePlat($type_plats),
             $prix_plats,
         );
         return $plat;
     }
+
+    //essaye de faire modifier une recette
+    public function modifier_plat(int $id_plat, array $data, array $files = []){
+        if (
+            isset($data['name_plat'], $data['description'], $files['image_plat'], $data['prix_plat'], $data['type_plat']) &&
+            trim($data['name_plat']) !== "" &&
+            trim($data['description']) !== "" &&
+            $files['image_plat']['error'] === UPLOAD_ERR_OK &&
+            trim($data['prix_plat']) !== "" &&
+            trim($data['type_plat']) !== ""
+        ) {
+            $nomPlat = trim($data["name_plat"]);
+            $filenameImg = basename($files['image_plat']['name']);
+            $description = trim($data["description"]);
+            $prixPlat = trim($data["prix_plat"]);
+            $type_plat = trim($data["type_plat"]);
+
+            // Vérifie que le prix est bien un nombre
+            if (!is_numeric($prixPlat)) {
+                throw new Exception('Le prix doit être un nombre'); // ou throw une exception si tu préfères
+            }
+
+            // ✅ Dossier de destination
+            $destinationDir = __DIR__ . '/../../data/Plats/Images/';
+            if (!is_dir($destinationDir)) {
+                mkdir($destinationDir, 0755, true); // Crée le dossier s'il n'existe pas
+            }
+
+            // ✅ Déplacement du fichier
+            $tmpPath = $files['image_plat']['tmp_name'];
+            $finalPath = $destinationDir . $filenameImg;
+
+            if (!move_uploaded_file($tmpPath, $finalPath)) {
+                throw new Exception("Erreur lors de l'enregistrement de l'image.");
+            }
+
+            // ✅ URL stockée en BDD
+            $imageUrl = BASE_URL . '/data/Plats/Images/' . $filenameImg;
+
+            $sql = "UPDATE platS 
+                    SET nom_plat = ?, description = ?, img_plats = ?, prix_plats = ?, type_plats = ?, updated_at = ?
+                    WHERE id_plat = ?";
+
+            var_dump($type_plat);
+            $stmt = $this->database->executeSqlStatement($sql, [
+                $nomPlat,
+                $description,
+                $filenameImg,
+                $prixPlat,
+                $type_plat,
+                (new DateTime())->format('Y-m-d H:i:s'),
+                $id_plat // Assure-toi que $id est défini avant
+            ]);
+            return $stmt->rowCount() > 0; // true si la mise à jour a modifié une ligne
+        }
+        return false;
+    }   
+    
 
 }
 
