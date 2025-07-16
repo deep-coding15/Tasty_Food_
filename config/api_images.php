@@ -46,7 +46,7 @@ class ImagesApi{
      * @param int $id : represente l'id du plat
      * @return void
      */
-    public function getImagesPlatById(int $id) {
+    public function getImagePlatById(int $id) {
         $sql = "SELECT id_plat, nom_plat FROM plats WHERE (img_plats IS NULL OR img_plats = '' OR img_plats = 'default.jpg') AND id_plat = :id";
         
         // Récupération du plat par son id

@@ -203,8 +203,8 @@ class UtilisateurRepository{
             $login = self::genererLoginUnique($firstname, $lastname, $pdo);
 
             $sql = "INSERT INTO utilisateur(nom, prenom, login, password, img_profil, email, telephone, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
-            $resultStatus = $stmt->execute([
+
+            $resultStatus = $this->database->executeSqlStatement($sql, [
                 $lastname,
                 $firstname,
                 $login,
@@ -214,7 +214,7 @@ class UtilisateurRepository{
                 $telephone,
                 false
             ]);
-
+           
             if($resultStatus) {
                 echo "Vos informations de connection ont été enregistré avec succès";
             } else {
