@@ -1,15 +1,45 @@
+
 <?php $title = 'Tasty Food - Table des Plats'; ?>
 <?php require_once __DIR__ . '/../include/SecureSession.php';
-    $session = new SecureSession(); ?>
-<?php if(($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : ?>
-<?php
+    $session = new SecureSession(); 
+    $message = $session->get('MESSAGE') ?? null;
+    $session->remove('MESSAGE'); //on l'affiche une seule fois
+    ?>
+
+<?php if(($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : 
+
 require_once __DIR__ . '/../models/plats.php';
 require_once __DIR__ . '/../../config/config.php';
 $platRepository = new PlatRepository();
 ?>
 <?php ob_start(); ?>
 <link rel="stylesheet" href="../../styles/dashboard.css">
+
+<?php
+    $isError = str_contains(strtolower($message), 'échec') || str_contains(strtolower($message), 'erreur');
+?>
+<?php if ($message): ?>
+    <div id="flash-message" class="<?= $isError ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' ?> block p-4 rounded relative top-16 bottom-8 shadow-md text-center w-[70%] mx-auto left-[2%]
+            transition-opacity duration-500">
+        <?= htmlspecialchars($message) ?>
+    </div>
+    <script>
+        // Exécute après chargement du DOM
+        document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+            flash.classList.add('opacity-0'); // effet de fondu Tailwind
+            setTimeout(() => flash.remove(), 500); // suppression après fade
+            }
+        }, 5000);
+        });
+    </script>
+    <?php endif; ?>
+
 <section class="h-[80%] flex">
+    
+
     <!-- Sidebar (Nav) -->
     <section id="nav-links" class="bg-gray-800 text-white  w-fit fixed top-[1vh] bottom-[8vh] left-0 h-fit  z-10">
         <div class="flex flex-col items-center mb-2">
@@ -31,7 +61,8 @@ $platRepository = new PlatRepository();
             </ul>
         </nav>
     </section>
-
+    
+    
     <!-- Main Content -->
     <div id="content" class="w-[100%] mx-auto  overflow-auto relative mt-[5%] mb-[10%] pt-16 ml-[10%] -z-5">
         <!-- Table des plats -->
@@ -115,6 +146,16 @@ $platRepository = new PlatRepository();
                 show_plat.classList.remove("opacity-0", "translate-y-2");
             }, 10); // petit délai pour permettre l'application initiale
         }
+    </script>
+    <script>
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+            flash.style.transition = 'opacity 0.5s ease-out';
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 500); // retire du DOM après fondu
+            }
+        }, 5000); // 5000 ms = 5 secondes
     </script>
 <?php endif; ?>
 <?php $content = ob_get_clean(); ?>

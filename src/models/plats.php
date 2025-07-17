@@ -424,7 +424,7 @@ class PlatRepository
             $sql = "INSERT INTO plats (nom_plat, description, img_plats, prix_plats, type_plats) VALUES 
                     (?, ?, ?, ?, ?)";
 
-            var_dump($type_plat);
+            //var_dump($type_plat);
             $stmt = $this->database->executeSqlStatement($sql, [
                 $nomPlat,
                 $description,
@@ -481,7 +481,7 @@ class PlatRepository
                     SET nom_plat = ?, description = ?, img_plats = ?, prix_plats = ?, type_plats = ?, updated_at = ?
                     WHERE id_plat = ?";
 
-            var_dump($type_plat);
+            //var_dump($type_plat);
             $stmt = $this->database->executeSqlStatement($sql, [
                 $nomPlat,
                 $description,

@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../include/SecureSession.php';
 $session = new SecureSession();
-$_SESSION['role'] = 'user';
+$session->set('ROLE', "administrateur");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,12 +65,12 @@ $_SESSION['role'] = 'user';
  p/*  $content */ ?>
   </main> -->
    <?php
-  if ($_SESSION['ROLE'] != 'administrateur') {
+  if ($session->get('ROLE') != 'administrateur') {
       echo '<main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
           '.$content .'
         </main>';
   }
-  else if($_SESSION['ROLE'] == 'administrateur') {?>
+  else if($session->get('ROLE') == 'administrateur') {?>
     <?=$content?>
   <?php }?>
 
@@ -108,7 +109,7 @@ $_SESSION['role'] = 'user';
 
       <!-- Copyright -->
       <div class="text-center mt-6 text-sm text-gray-400">
-        © 2025 Tasty Food. Tous droits réservés.
+        © 2025 Merveille Tsafack. Tous droits réservés.
       </div>
     </div>
   </footer>

@@ -1,12 +1,28 @@
 <?php $title = "Modifiez une recette !"; ?>
-<?php require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession(); ?>
-<?php if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : ?>
+<?php 
+require_once __DIR__ . '/../include/SecureSession.php';
+$session = new SecureSession(); 
 
-    <?php require_once __DIR__ . '/../models/plats.php';
+if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : 
+
+    require_once __DIR__ . '/../models/plats.php';
+    require_once __DIR__ . '/../include/Utils.php';
     $platRepository = new PlatRepository();
     $id = $_GET['id'];
-    $plat = $platRepository->getPlat($id); ?>
+    $plat = $platRepository->getPlat($id); 
+    
+    if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($id)) {
+
+        $result = $platRepository->supprimer_plat($id);
+
+        if ($result) {
+            $session->set('MESSAGE', "Plat supprimé avec succès.");
+        } else {
+            $session->set('MESSAGE', "Echec de la suppression du plat.");
+        }
+        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php");
+
+    } ?>
     <?php ob_start(); ?>
 
     <div class=" flex flex-col items-center justify-center min-h-screen mt-6 mb-64">
@@ -63,13 +79,5 @@ $session = new SecureSession(); ?>
     <?php $content = ob_get_clean(); ?>
 
     <?php require 'layout.php'; ?>
-
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $postData = $_POST;
-        $filesData = $_FILES;
-        $result = $platRepository->supprimer_plat($id);
-
-        echo "<script>console.log(" . json_encode($result) . ");</script>";
-    } ?>
+    
 <?php endif; ?>

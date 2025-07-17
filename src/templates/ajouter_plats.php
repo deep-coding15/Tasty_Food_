@@ -1,7 +1,29 @@
 <?php $title = "Ajout d'une recette !"; ?>
-<?php require_once __DIR__ . '/../models/plats.php';
-    $platRepository = new PlatRepository();
-   ?>
+<?php
+  require_once __DIR__ . '/../include/SecureSession.php';
+  $session = new SecureSession();
+  //var_dump($session->get('ROLE'));
+if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') :
+
+  require_once __DIR__ . '/../models/plats.php';
+  $platRepository = new PlatRepository();
+
+  if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    $result = $platRepository->ajouter_plat($_POST, $_FILES);
+    require_once __DIR__ . '/../include/Utils.php';
+    if($result){
+      $session->set('MESSAGE', "Plat ajouté avec succès.");
+    }
+    else{
+      $session->set('MESSAGE', "Echec de l'ajout du plat.");
+    }
+    
+    (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php");
+
+    //echo "<script>console.log(" . json_encode($result) . ");</script>";
+  } 
+?>
+
 <?php ob_start(); ?>
 
 <div class=" flex flex-col items-center justify-center min-h-screen mt-6 mb-36">
@@ -65,14 +87,5 @@
   </form>
 </div>
 <?php $content = ob_get_clean(); ?>
-
-<?php require 'layout.php'; ?>
-
-<?php
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
-  $postData = $_POST;
-  $filesData = $_FILES;
-  $result = $platRepository->ajouter_plat($postData, $filesData);
-
-  echo "<script>console.log(" . json_encode($result) . ");</script>";
-} ?>
+<?php endif; ?>
+<?php require __DIR__ . '/layout.php'; ?>
