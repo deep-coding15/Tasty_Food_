@@ -269,6 +269,39 @@ class PlatRepository
         return $plats;
     }
 
+    public function getNombrePlats(){
+        $sql = "SELECT COUNT(*) AS nb_articles FROM plats";
+        $query = $this->database->executeSqlStatement($sql);
+        $result = $query->fetch();
+        return (int) $result['nb_articles'];
+    }
+
+    public function getNombrePages(int $nb_total_plats, int $nb_plats_par_page) : int {
+        return ceil($nb_total_plats / $nb_plats_par_page);
+    }
+
+    /**
+     * This function nee
+     * @param offset : c'est l'element à partir duquel on commence à lister
+     * @param limit : c'est le nombre de plats a prendre
+     */
+    public function getPlatsParPage(int $limit, int $offset)
+    {
+        // On injecte les entiers *directement* car PDO ne gère pas bien LIMIT ? OFFSET ?
+        $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats
+                FROM plats
+                ORDER BY updated_at DESC
+                LIMIT $limit OFFSET $offset";  
+        $query = $this->database->executeSqlStatement($sql);
+        $plats = [];
+        while (($row = $query->fetch(PDO::FETCH_ASSOC))) {
+            $plat = self::fetchData($row);
+            $plats[] = $plat;
+        }
+        $this->setImagesByAPI();
+        return $plats;
+    }
+
     /* private function executeSqlStatement(string $sql, array $params = []){
         $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
@@ -502,4 +535,8 @@ class PlatRepository
         $stmt = $this->database->executeSqlStatement($sql, [$id]);
         return $stmt->rowCount() > 0;
     }
+
+    
+
+   
 }

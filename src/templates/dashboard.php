@@ -1,4 +1,3 @@
-
 <?php $title = 'Tasty Food - Table des Plats'; ?>
 <?php require_once __DIR__ . '/../include/SecureSession.php';
     $session = new SecureSession(); 
@@ -64,13 +63,13 @@ $platRepository = new PlatRepository();
     
     
     <!-- Main Content -->
-    <div id="content" class="w-[100%] mx-auto  overflow-auto relative mt-[5%] mb-[10%] pt-16 ml-[10%] -z-5">
+    <div id="content" class="w-[100%] mx-auto   relative mt-[5%] mb-[10%] pt-16 ml-[10%] -z-5">
         <!-- Table des plats -->
         <section class=" -mt-8 ml-8 flex-1">
             <div class="flex justify-end text-2xl">
-                <a href="<?=BASE_URL . '/src/templates/ajouter_plats.php'?>" class="btn bg-blue-500 p-2 my-8 ml-8 rounded-xl">Ajouter un plat !</a>
+                <a href="<?=BASE_URL . '/src/templates/ajouter_plats.php'?>" class="btn bg-blue-500 p-2 my-2 -mt-8 ml-8 rounded">Ajouter un plat !</a>
             </div>
-            <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+            <table class="min-w-full bg-white border border-gray-300 rounded-2xl shadow-lg overflow-auto">
                 <thead class="bg-blue-500 text-white">
                     <tr>
                         <td class="px-6 py-3">Image</td>
@@ -82,11 +81,25 @@ $platRepository = new PlatRepository();
                 </thead>
                 <tbody>
                     <?php 
-                    $plats = $platRepository->getPlatsByUpdatedDate();
-                    $nb = 0; $max = count($plats); $i = 1;
-                    define('MAX_OF_PLATS', 5);
-                    foreach($plats as $plat) : 
-                        if($nb < MAX_OF_PLATS * $i) : ?>
+                    define('NB_PLATS_PAR_PAGE', 5);
+                    
+                    $nb_total_plats = $platRepository->getNombrePlats();
+                    $nb_pages = $platRepository->getNombrePages($nb_total_plats, NB_PLATS_PAR_PAGE);
+                    /* echo $nb_pages;
+                    echo $nb_total_plats; */
+                    $current_page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 
+                        ? (int) $_GET['page'] 
+                        : 1;
+                    //echo 'current: ' . $current_page;
+                    $plats = $platRepository->getPlatsParPage(NB_PLATS_PAR_PAGE, $current_page * NB_PLATS_PAR_PAGE - NB_PLATS_PAR_PAGE);
+                    $nb = 0;  
+                    //$sousTableau = array_slice($plats, $offset, $limit);
+                    //echo '<pre>' . var_dump($plats) . '</pre>';
+                    foreach ($plats as $index => $plat) :
+
+                    //for ($nb=NB_PLATS_PAR_PAGE * ($current_page - 1); $nb < (NB_PLATS_PAR_PAGE * $current_page); $nb++) :
+                        //$plat = $plats[$nb];
+                        if($nb < NB_PLATS_PAR_PAGE * $current_page) : ?>
                             <tr class="border-t border-gray-300">
                                 <td class="px-6 py-4">
                                     <img src="<?=$plat->getImgPlat()?>" alt="Image de <?=$plat->getNomPlat()?>" 
@@ -106,14 +119,107 @@ $platRepository = new PlatRepository();
                                 </td>
                             </tr>
                         <?php $nb++; ?>
+                        <?php else : ?>
+                            $nb = 0;
                         <?php endif; ?>
                     <?php endforeach;?>
                 </tbody>
             </table>
+            <div class="flex justify-end text-2xl">
+                
+                
+
+                <?php
+                    // Sécurité & fallback
+                    $current_page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 
+                        ? (int) $_GET['page'] 
+                        : 1;
+
+                    // Pages précédente et suivante
+                    $page_prec = max(1, $current_page - 1);
+                    $page_suiv = min($nb_pages, $current_page + 1);
+                ?>
+
+                
+            </div>
+            <!-- <div class="relative top-8 flex justify-between mx-auto right-[2%]">
+                <?php if ($current_page > 1): ?>
+                    <a href="?page=<?= $page_prec ?>" class="btn  bg-blue-500 p-2 my-2 -mt-8 ml-8 rounded">Précédente !</a>
+                <?php else: ?>
+                    <a href="?page=<?= $page_prec ?>" class="btn hidden opacity-0 bg-blue-500 p-2 my-2 -mt-8 ml-8 rounded">Précédente !</a>
+                <?php endif; ?>
+                <?php if ($current_page < $nb_pages): ?>
+                    <a href="?page=<?= $page_suiv ?>" class="btn  bg-blue-500 p-2 my-2 -mt-8 ml-8 rounded">Suivante !</a>
+                <?php else: ?>
+                    <a href="?page=<?= $page_suiv ?>" class="btn hidden opacity-0 bg-blue-500 p-2 my-2 -mt-8 ml-8 rounded">Suivante !</a>
+                <?php endif; ?>
+                <?php if(isset($_GET['page']) && !empty($_GET['page']) && $_GET['page'] > 0 && $_GET['page'] <= $nb_pages)
+                    {
+                        $current_page = (int)strip_tags($_GET['page']);    
+                    }
+                    else{
+                        $current_page = 1;
+                    }
+                ?>
+            </div> -->
+            <div class="flex justify-center items-center gap-2 mt-10">
+
+                <div class="flex gap-1">
+                    <!-- Précédente -->
+                    <a href="?page=<?= $page_prec ?>"
+                        class="px-4 py-2 rounded bg-blue-500 text-white <?= $current_page == 1 ? 'pointer-events-none opacity-50' : 'hover:bg-blue-600' ?>">
+                        Précédente
+                    </a>
+                    <?php // Fenêtre de pages visibles autour de la page actuelle
+                        $start = max(2, $current_page - 2);
+                        $end = min($nb_pages - 1, $current_page + 2);
+                    ?>
+
+                    <!-- Page 1 toujours visible -->
+                    <a href="?page=1"
+                        class="px-3 py-1 rounded border <?= $current_page == 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">
+                        1
+                    </a>
+
+                    <!-- Ellipse avant -->
+                    <?php if ($start > 2): ?>
+                        <span class="px-2 text-gray-500">...</span>
+                    <?php endif; ?>
+
+                    <!-- Pages autour de la page actuelle -->
+                    <?php for ($i = $start; $i <= $end; $i++): ?>
+                        <a href="?page=<?= $i ?>"
+                        class="px-3 py-1 rounded border <?= $i == $current_page ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">
+                        <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+
+                    <!-- Ellipse après -->
+                    <?php if ($end < $nb_pages - 1): ?>
+                        <span class="px-2 text-gray-500">...</span>
+                    <?php endif; ?>
+
+                    <!-- Dernière page toujours visible -->
+                    <?php if ($nb_pages > 1): ?>
+                        <a href="?page=<?= $nb_pages ?>"
+                        class="px-3 py-1 rounded border <?= $current_page == $nb_pages ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">
+                        <?= $nb_pages ?>
+                        </a>
+                    <?php endif; ?>
+
+                    
+                    <!-- Suivante -->
+                    <a href="?page=<?= $page_suiv ?>"
+                        class="px-4 py-2 rounded bg-blue-500 text-white <?= $current_page == $nb_pages ? 'pointer-events-none opacity-50' : 'hover:bg-blue-600' ?>">
+                        Suivante
+                    </a>
+                </div>
+
+            </div>
+
         </section>
     </div>
 </section>
-
 <?php $id_cible = isset($_GET['id']) ? $_GET['id'] : null;?>
 <?php if($id_cible) : ?>
 <section id="detail" class="flex flex-col items-center justify-center mb-24">
