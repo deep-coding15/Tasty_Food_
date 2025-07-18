@@ -65,16 +65,11 @@ $session->set('ROLE', "administrateur");
   <!-- <main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
  p/*  $content */ ?>
   </main> -->
-   <?php
-  if ($session->get('ROLE') != 'administrateur') {
-      echo '<main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
-          '.$content .'
-        </main>';
-  }
-  else if($session->get('ROLE') == 'administrateur') {?>
-    <?=$content?>
-  <?php }?>
-
+   <!--  -->
+  <main class="col-span-2 row-span-1 overflow-auto flex flex-col">
+    <?=$content?> 
+  </main>
+  
   <!-- <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0
      w-full "> -->
   <footer class="bg-gray-800 text-white -py-2 h-[12vh] fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700 col-span-2 z-100

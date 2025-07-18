@@ -20,7 +20,7 @@ $pages = [
 ];
 ?>
 
-<section id="links" class="relative top-16 mt-16">
+<section id="links" class="relative top-2 mt-16">
     <nav>
         <ul class="flex flex-row justify-between w-full">
 
@@ -70,8 +70,8 @@ $pages = [
 $page = $_GET['page'] ?? 'default'; // valeur par défaut
 ?>
 
-<div class="grid grid-cols-1 gap-4 relative top-16 mt-16">
-    <section class="mb-24 mt-4">
+<div class="grid grid-cols-1 gap-4 relative top-8 bottom-96 mb-16">
+    <section class="mb-16 mt-1">
         <h2 class="text-3xl font-bold text-center mt-[-12] mb-4">
             Des plats faits maison, avec amour, livrés chez vous.
         </h2>
@@ -103,7 +103,7 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
             foreach ($plats as $plat):
                 ?>
                 <div
-                    class="max-w-sm max-h-full pb-8 bg-white rounded-2xl overflow-visible shadow-lg transition hover:scale-105 hover:shadow-xl duration-300">
+                    class="max-w-sm max-h-full pb-8 bg-white rounded-2xl shadow-lg transition hover:scale-105 hover:shadow-xl duration-300">
                     <img src="<?php echo $plat->getImgPlat() ?>" alt="<?= 'image du plat' . $plat->getNomPlat(); ?>"
                         class="w-full h-48 object-cover rounded-t-2xl">
                     <div class="p-6 space-y-4 min-h-fit">
@@ -131,7 +131,7 @@ $page = $_GET['page'] ?? 'default'; // valeur par défaut
     $id_cible = isset($_GET['id']) ? $_GET['id'] : null;
     if ($id_cible):
         ?>
-        <section class="flex flex-col items-center justify-center m-12">
+        <section class="flex flex-col items-center justify-center mt-4 mb-24">
             <div id="plat" class="bg-gray-300 p-8 rounded-3xl shadow-2xl w-fit max-w-md space-y-6 flex-grow flex flex-col items-center justify-center-safe
                     hidden opacity-0 translate-y-2 transition duration-500 hover:scale-105 ease-out">
                 <?php $plat = $platRepository->getPlat((int) $id_cible); ?>

@@ -3,7 +3,7 @@ $title = 'Tasty Food - Contact';
 require_once __DIR__ .'/../../config/database.php';
 ob_start();
 ?>
-<section class="w-4/6 mx-auto ">
+<section class="w-4/6 mx-auto mb-12">
     
   <div class="flex flex-col items-center justify-center m-12 w-full">
     <h1 class="text-center text-2xl font-medium text-gray-800 mb-6">Contactez - nous</h1>
@@ -54,17 +54,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $postData['email'];
         $message = $postData['message'];
 
-        $database = new Database();
-        $pdo = $database->getConnection();
-
         $sql = "INSERT INTO contact(name_user, email, message) VALUES (:name, :email, :message)";
-        $statement = $pdo->prepare($sql);
-        $resultStatus = $statement->execute([
-            ":name"=> $name,
-            ":email"=> $email,
-            ":message"=> $message
-        ]);
-
+        
+        $resultStatus = (new Database())->executeSqlStatement($sql, [
+              ":name"=> $name,
+              ":email"=> $email,
+              ":message"=> $message
+          ]
+        );
+        /* $pdo = $database->getConnection();
+ */
+        /* $statement = $d $pdo->prepare($sql);
+        $resultStatus = $statement->execute();
+ */
         if($resultStatus) {
             echo "Le message a été enregistré avec succès";
         } else {

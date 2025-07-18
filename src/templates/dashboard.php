@@ -47,7 +47,7 @@ $session->remove('MESSAGE'); //on l'affiche une seule fois
             </div>
             <nav>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-yellow-400">Accueil</a></li>
+                    <li><a href="<?=BASE_URL . '/src/templates/menu.php'?>" class="hover:text-yellow-400">Accueil</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Ingrédients</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Plats</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Repas</a></li>
