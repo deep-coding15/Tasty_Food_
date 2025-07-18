@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../include/SecureSession.php';
 $session = new SecureSession();
-$_SESSION['role'] = 'user';
+$session->set('ROLE', "administrateur");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,10 +27,11 @@ $_SESSION['role'] = 'user';
 
 
 <body class="flex flex-col space-y-4 scroll-smooth h-full">
-  <header class="bg-white shadow-md fixed top-0 inset-x-0 z-50 h-14">
+  <header class="bg-white shadow-md fixed top-0 inset-x-0 z-50 h-14 w-full">
     <!-- bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700 col-span-2 z-100">
  -->
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- max-w-7xl -->
+    <div class="mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
         <a href="index.php?page=default" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
         <a href="menu.php" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
@@ -64,24 +66,29 @@ $_SESSION['role'] = 'user';
  p/*  $content */ ?>
   </main> -->
    <?php
-  if ($_SESSION['ROLE'] != 'administrateur') {
+  if ($session->get('ROLE') != 'administrateur') {
       echo '<main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
           '.$content .'
         </main>';
   }
-  else if($_SESSION['ROLE'] == 'administrateur') {?>
+  else if($session->get('ROLE') == 'administrateur') {?>
     <?=$content?>
   <?php }?>
 
   <!-- <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0
      w-full "> -->
-  <footer class="bg-gray-800 text-white -py-2 h-fit fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700 col-span-2 z-100">
-
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+  <footer class="bg-gray-800 text-white -py-2 h-[12vh] fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700 col-span-2 z-100
+      ">
+    <div class="max-w-6xl mx-auto px-4 py-auto relative top-1/2 -translate-y-1/2 transform">
+      <div class="flex flex-row md:flex-row justify-between items-center space-y-4 md:space-y-0">
 
         <!-- Logo ou titre -->
         <div class="text-lg font-semibold">Tasty Food</div>
+
+        <!-- Copyright -->
+        <div class="flex items-center justify-center text-center mt-6 text-sm text-gray-400 my-auto">
+          © 2025 Merveille Tsafack. Tous droits réservés.
+        </div>
 
         <!-- Liens -->
         <div class="flex space-x-6 text-sm">
@@ -104,12 +111,11 @@ $_SESSION['role'] = 'user';
           </svg>
         </a>
       </div> -->
+        
+      
       </div>
 
-      <!-- Copyright -->
-      <div class="text-center mt-6 text-sm text-gray-400">
-        © 2025 Tasty Food. Tous droits réservés.
-      </div>
+      
     </div>
   </footer>
   <script src="https://cdn.tailwindcss.com"></script>

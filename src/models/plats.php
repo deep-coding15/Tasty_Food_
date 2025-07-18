@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../include/SecureSession.php"; //A mettre en place apres avoir fini les plats
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/database.php";
+
 class Plat
 {
     private int $id_plat;
@@ -194,6 +195,7 @@ class PanierPlats
 }
 
 require_once __DIR__ . '/../../config/api_images.php';
+require_once __DIR__ . '/../exceptions/NullException.php';
 class PlatRepository
 {
     /**
@@ -263,6 +265,57 @@ class PlatRepository
         while (($data = $statement->fetch(PDO::FETCH_ASSOC))) {
             $plat = self::fetchData($data);
 
+            $plats[] = $plat;
+        }
+        $this->setImagesByAPI();
+        return $plats;
+    }
+
+    /**
+     * This funtion return the number of the plats in the database
+     */
+    public function getNombrePlats(){
+        $sql = "SELECT COUNT(*) AS nb_articles FROM plats";
+        $query = $this->database->executeSqlStatement($sql);
+        $result = $query->fetch();
+        return (int) $result['nb_articles'];
+    }
+
+    public function getNombrePlatsArray(array $plats){
+        foreach ($plats as $plat) {
+            if (!$plat instanceof Plat) {
+                //Ce back slash '\' indique a PHP de chercher la fonction dans l'espace de nom (namespace) global.
+                throw new \InvalidArgumentException("Tous les éléments doivent être des instances de Plat.");
+            }
+        }
+        if($plats === null){ //is_null($plats)
+            throw new NullException("Le tableau de plats est null");
+        }
+        if(!is_array($plats))
+            throw new \InvalidArgumentException("La valeur passé en paramètre doit être un tableau");
+        return count($plats);
+    }
+
+    public function getNombrePages(int $nb_total_plats, int $nb_plats_par_page) : int {
+        return ceil($nb_total_plats / $nb_plats_par_page);
+    }
+
+    /**
+     * This function gives a $limit plat from a $offset from the most recent to the most distant
+     * @param int $offset : c'est l'element à partir duquel on commence à lister
+     * @param int $limit : c'est le nombre de plats a prendre
+     */
+    public function getPlatsParPage(int $limit, int $offset)
+    {
+        // On injecte les entiers *directement* car PDO ne gère pas bien LIMIT ? OFFSET ?
+        $sql = "SELECT id_plat, nom_plat, description, img_plats, created_at, updated_at, deleted_at, prix_plats, type_plats
+                FROM plats
+                ORDER BY updated_at DESC
+                LIMIT $limit OFFSET $offset";  
+        $query = $this->database->executeSqlStatement($sql);
+        $plats = [];
+        while (($row = $query->fetch(PDO::FETCH_ASSOC))) {
+            $plat = self::fetchData($row);
             $plats[] = $plat;
         }
         $this->setImagesByAPI();
@@ -424,7 +477,7 @@ class PlatRepository
             $sql = "INSERT INTO plats (nom_plat, description, img_plats, prix_plats, type_plats) VALUES 
                     (?, ?, ?, ?, ?)";
 
-            var_dump($type_plat);
+            //var_dump($type_plat);
             $stmt = $this->database->executeSqlStatement($sql, [
                 $nomPlat,
                 $description,
@@ -481,7 +534,7 @@ class PlatRepository
                     SET nom_plat = ?, description = ?, img_plats = ?, prix_plats = ?, type_plats = ?, updated_at = ?
                     WHERE id_plat = ?";
 
-            var_dump($type_plat);
+            //var_dump($type_plat);
             $stmt = $this->database->executeSqlStatement($sql, [
                 $nomPlat,
                 $description,
@@ -502,4 +555,20 @@ class PlatRepository
         $stmt = $this->database->executeSqlStatement($sql, [$id]);
         return $stmt->rowCount() > 0;
     }
+
+    public function searhPlatByNom(string $name_plat)  {
+        $all_plats = self::getPlats();
+        $plats = [];
+
+        foreach ($all_plats as $index => $plat) {
+            //insensible a la casse
+            if (stripos($plat->getNomPlat(), $name_plat) !== false) {
+                $plats[] = $plat;
+            }
+        }
+        return $plats;
+    }
+    
+
+   
 }

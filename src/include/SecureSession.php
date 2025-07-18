@@ -1,7 +1,14 @@
 <?php
 
+/* enum Role {
+    case VISITEUR;
+    case CLIENT;
+    case PERSONNEL;
+    case ADMINISTRATEUR;
+} */
 class SecureSession
 {
+    //private Role $role;
     //Durée d'inactivité maximale avant expiration (expiration)
     private int $timeOutLastActivity = 0;
     private int $timeOutCreated = 0;
@@ -43,7 +50,7 @@ class SecureSession
 
     private function handleSessionSecurity(): void{
         //1. Vérifie l'inactivité (timeout)
-        if(isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY']) > $this->timeOutLastActivity){
+        if(null !== ($this->get('LAST_ACTIVITY')) && (time() - $this->get('LAST_ACTIVITY')) > $this->timeOutLastActivity){
             //Si l'utilisateur est inactif trop longtemps, on detruit la session
             $this->destroy();
             //header("Location: homepage.php?expired=1");//Redirige k'utilisateur vers la page de connexion
@@ -51,16 +58,16 @@ class SecureSession
         }
         else{
             //Sinon, on met à jour le temps de derniere connexion
-            $_SESSION['LAST_ACTIVITY'] = time();
+            $this->set('LAST_ACTIVITY', time());
         }
 
         //2. Regenere l'identifiant de session de façon périodique (ici toutes les 5 minutes)
-        if(!isset($_SESSION['CREATED'])){
-            $_SESSION['CREATED'] = time();
+        if(null == ($this->get('CREATED'))){
+            $this->set('CREATED', time());
         }
-        else if((time() - $_SESSION['CREATED']) > $this->timeOutCreated){
+        else if((time() - $this->get('CREATED')) > $this->timeOutCreated){
             session_regenerate_id(true); //Change l'ID de session pour eviter le vol de session
-            $_SESSION['CREATED'] = time(); //Réinitialise le temps de création
+            $this->set('CREATED', time()); //Réinitialise le temps de création
         }
 
         //3. Vérification de connexion
@@ -69,7 +76,7 @@ class SecureSession
             exit;
         } */
        //$_SESSION['LOGIN'] = "";
-       $_SESSION['ROLE'] = 'administrateur';
+       $this->set('ROLE', 'administrateur');
     }
 
     public function set(string $key, $value): void

@@ -1,12 +1,32 @@
 <?php $title = "Modifiez une recette !"; ?>
-<?php require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession(); ?>
-<?php if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : ?>
 
-    <?php require_once __DIR__ . '/../models/plats.php';
+<?php
+require_once __DIR__ . '/../include/SecureSession.php';
+$session = new SecureSession();
+
+if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : 
+    
+    require_once __DIR__ . '/../models/plats.php';
     $platRepository = new PlatRepository();
-    $id = $_GET['id'];
-    $plat = $platRepository->getPlat($id); ?>
+
+    $id = $_GET['id']; //id recupere lorsque l'admin clique sur modifier plat d'un plat
+    $plat = $platRepository->getPlat($id);
+
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        
+        $result = $platRepository->modifier_plat($id, $_POST, $_FILES);
+
+        require_once __DIR__ . '/../include/Utils.php';
+        if ($result) {
+            $session->set('MESSAGE', "Plat modifié avec succès.");
+        } else {
+            $session->set('MESSAGE', "Echec de la modification du plat.");
+        }
+        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php");
+
+        //echo "<script>console.log(" . json_encode($result) . ");</script>";
+    }
+?>
     <?php ob_start(); ?>
 
     <div class=" flex flex-col items-center justify-center min-h-screen mt-6 mb-64">
@@ -52,7 +72,7 @@ $session = new SecureSession(); ?>
             <div>
                 <label for="type_plat" class="block text-sm font-medium text-black-300">Type du plat : </label>
                 <select name="type_plat" id="type_plat" required class="border rounded-lg text-gray-800 p-2 bg-gray-100 w-full text-center" value="<?= $plat->getTypePlat() ?>">
-                    <option value="6" name="type_plat" disabled>--Selectionner un type de plat--</option>    
+                    <option value="6" name="type_plat" disabled>--Selectionner un type de plat--</option>
                     <option value="1" name="type_plat">Accompagnements</option>
                     <option value="2" name="type_plat">Dessert</option>
                     <option value="3" name="type_plat">Plat d'entrée</option>
@@ -76,13 +96,4 @@ $session = new SecureSession(); ?>
     <?php $content = ob_get_clean(); ?>
 
     <?php require 'layout.php'; ?>
-
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $postData = $_POST;
-        $filesData = $_FILES;
-        $result = $platRepository->modifier_plat($id, $postData, $filesData);
-
-        echo "<script>console.log(" . json_encode($result) . ");</script>";
-    } ?>
 <?php endif; ?>

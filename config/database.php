@@ -43,7 +43,7 @@ class Database{
      */
     public function executeSqlStatement(string $sql, array $params = []){
         $statement = $this->connection->prepare($sql);
-        $statement->execute($params);
+        (isset($params)) ? $statement->execute($params) : $statement->execute();
         return $statement;
     }
 }
