@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../include/SecureSession.php"; //A mettre en place apres avoir fini les plats
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/database.php";
+
 class Plat
 {
     private int $id_plat;
@@ -194,6 +195,7 @@ class PanierPlats
 }
 
 require_once __DIR__ . '/../../config/api_images.php';
+require_once __DIR__ . '/../exceptions/NullException.php';
 class PlatRepository
 {
     /**
@@ -269,6 +271,9 @@ class PlatRepository
         return $plats;
     }
 
+    /**
+     * This funtion return the number of the plats in the database
+     */
     public function getNombrePlats(){
         $sql = "SELECT COUNT(*) AS nb_articles FROM plats";
         $query = $this->database->executeSqlStatement($sql);
@@ -276,14 +281,29 @@ class PlatRepository
         return (int) $result['nb_articles'];
     }
 
+    public function getNombrePlatsArray(array $plats){
+        foreach ($plats as $plat) {
+            if (!$plat instanceof Plat) {
+                //Ce back slash '\' indique a PHP de chercher la fonction dans l'espace de nom (namespace) global.
+                throw new \InvalidArgumentException("Tous les éléments doivent être des instances de Plat.");
+            }
+        }
+        if($plats === null){ //is_null($plats)
+            throw new NullException("Le tableau de plats est null");
+        }
+        if(!is_array($plats))
+            throw new \InvalidArgumentException("La valeur passé en paramètre doit être un tableau");
+        return count($plats);
+    }
+
     public function getNombrePages(int $nb_total_plats, int $nb_plats_par_page) : int {
         return ceil($nb_total_plats / $nb_plats_par_page);
     }
 
     /**
-     * This function nee
-     * @param offset : c'est l'element à partir duquel on commence à lister
-     * @param limit : c'est le nombre de plats a prendre
+     * This function gives a $limit plat from a $offset from the most recent to the most distant
+     * @param int $offset : c'est l'element à partir duquel on commence à lister
+     * @param int $limit : c'est le nombre de plats a prendre
      */
     public function getPlatsParPage(int $limit, int $offset)
     {
@@ -536,6 +556,18 @@ class PlatRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function searhPlatByNom(string $name_plat)  {
+        $all_plats = self::getPlats();
+        $plats = [];
+
+        foreach ($all_plats as $index => $plat) {
+            //insensible a la casse
+            if (stripos($plat->getNomPlat(), $name_plat) !== false) {
+                $plats[] = $plat;
+            }
+        }
+        return $plats;
+    }
     
 
    
