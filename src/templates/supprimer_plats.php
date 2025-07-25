@@ -1,8 +1,6 @@
 <?php $title = "Modifiez une recette !"; ?>
 <?php 
-require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession(); 
-
+include __DIR__ . "/../include/init.php";
 if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : 
 
     require_once __DIR__ . '/../models/plats.php';
@@ -20,7 +18,7 @@ if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur
         } else {
             $session->set('MESSAGE', "Echec de la suppression du plat.");
         }
-        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php");
+        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php", 301);
 
     } ?>
     <?php ob_start(); ?>

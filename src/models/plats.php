@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../include/SecureSession.php"; //A mettre en place apres avoir fini les plats
+include __DIR__ . "/../include/init.php"; //A mettre en place apres avoir fini les plats
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/database.php";
 

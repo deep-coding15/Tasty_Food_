@@ -1,6 +1,7 @@
 <?php $content = ob_get_clean(); ?>
 <?php 
 require_once __DIR__ ."/layout.php";
+require_once __DIR__ . '/../include/init.php';
 require_once __DIR__ .'/../../config/database.php';
 require __DIR__ .'/../models/utilisateur.php';
 $database = new Database();
@@ -29,10 +30,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $pdo = $database->getConnection();
             $image = 'default_profile_photo.jpg';
             $login = $utilisateurRepository->genererLoginUnique($firstname, $lastname, $pdo);
-
+            
             $sql = "INSERT INTO utilisateur(nom, prenom, login, password, img_profil, email, telephone, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
+            /* $stmt = $pdo->prepare($sql);
             $resultStatus = $stmt->execute([
+                $lastname,
+                $firstname,
+                $login,
+                password_hash($password, PASSWORD_DEFAULT),
+                $image,
+                $email, 
+                $telephone,
+                false
+            ]); */
+
+            $resultStatus = $database->executeSqlStatement($sql, [
                 $lastname,
                 $firstname,
                 $login,
@@ -64,6 +76,3 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
     }
 }
-
-
-
