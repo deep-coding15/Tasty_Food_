@@ -1,8 +1,8 @@
 <?php $title = "Modifiez une recette !"; ?>
 
 <?php
-require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession();
+
+include __DIR__ . "/../include/init.php";
 
 if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') : 
     
@@ -22,7 +22,7 @@ if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur
         } else {
             $session->set('MESSAGE', "Echec de la modification du plat.");
         }
-        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php");
+        (new Utils())->redirect(BASE_URL . "/src/templates/dashboard.php", 301);
 
         //echo "<script>console.log(" . json_encode($result) . ");</script>";
     }

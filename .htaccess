@@ -14,3 +14,6 @@
 
 # Désactiver l'indexation des dossiers
 Options -Indexes
+
+#Redirige automatiquement les erreurs 404 vers la page erreur404.php
+ErrorDocument 404 /erreur404.php

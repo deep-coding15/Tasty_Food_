@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession();
-$session->set('ROLE', "administrateur");
+include __DIR__ . '/../include/init.php';
+
+$_session->set('ROLE', "client");
 
 ?>
 <!DOCTYPE html>
@@ -34,12 +34,13 @@ $session->set('ROLE', "administrateur");
     <div class="mx-auto px-4 py-4 flex items-center justify-between">
       <nav class="space-x-6 hidden md:flex">
         <a href="index.php?page=default" class="text-gray-600 hover:text-blue-600 flex-1">Accueil</a>
-        <a href="menu.php" class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
-        <a href="reservation.php" class="text-gray-600 hover:text-blue-600 flex-1">Réservation</a>
-        <a href="livraison.html" class="text-gray-600 hover:text-blue-600 flex-1">Livraison</a>
-        <a href="contact.php" class="text-gray-600 hover:text-blue-600 flex-1">A propos</a>
-        <a href="contact.php" class="text-gray-600 hover:text-blue-600 flex-1">Contact</a>
-        <a href="connexion.php" id="connexion" class="text-gray-600 hover:text-blue-600 flex-1" >Connexion</a>
+        <a href=<?=BASE_URL."/src/templates/menu.php"?> class="text-gray-600 hover:text-blue-600 flex-1">Menu</a>
+        <a href=<?=BASE_URL."/src/templates/reservation.php"?> class="text-gray-600 hover:text-blue-600 flex-1">Réservation</a>
+        <a href=<?=BASE_URL."/src/templates/livraison.html"?> class="text-gray-600 hover:text-blue-600 flex-1">Livraison</a>
+        <a href=<?=BASE_URL."/src/templates/a_propos.php"?> class="text-gray-600 hover:text-blue-600 flex-1">A propos</a>
+        <a href=<?=BASE_URL."/src/templates/contact.php"?> class="text-gray-600 hover:text-blue-600 flex-1">Contact</a>
+        <a href=<?=BASE_URL."/src/templates/connexion.php"?> id="connexion" class="text-gray-600 hover:text-blue-600 flex-1" >Connexion</a>
+        <a href=<?=BASE_URL."/src/templates/profil.php"?> id="connexion" class="block text-gray-700 hover:text-blue-600 flex-1">Profil</a>
       </nav>
       <!-- bouton hamburger visible sur mobile (petits écrans)-->
       <button id="menu-toggle" class="md:hidden text-gray-600 focus:outline-none">
@@ -52,12 +53,13 @@ $session->set('ROLE', "administrateur");
     <!-- uniquement visible sur mobile -->
     <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 space-y-2">
       <a href="index.php?page=default" class="block text-gray-700 hover:text-blue-600">Accueil</a>
-      <a href="menu.php" class="block text-gray-700 hover:text-blue-600">Menu</a>
-      <a href="reservation.php" class="block text-gray-700 hover:text-blue-600">Réservation</a>
-      <a href="livraison.html" class="block text-gray-700 hover:text-blue-600">Livraison</a>
-      <a href="contact.php" class="text-gray-600 hover:text-blue-600 flex-1">A propos</a>
-      <a href="contact.php" class="block text-gray-700 hover:text-blue-600">Contact</a>
-      <a id="connexion" class="block text-gray-700 hover:text-blue-600" href="connexion.php">Connexion</a>
+      <a href=<?=BASE_URL."/src/templates/menu.php"?> class="block text-gray-700 hover:text-blue-600">Menu</a>
+      <a href=<?=BASE_URL."/src/templates/reservation.php"?> class="block text-gray-700 hover:text-blue-600">Réservation</a>
+      <a href=<?=BASE_URL."/src/templates/livraison.php"?> class="block text-gray-700 hover:text-blue-600">Livraison</a>
+      <a href=<?=BASE_URL."/src/templates/a_propos.php"?> class="text-gray-600 hover:text-blue-600 flex-1">A propos</a>
+      <a href=<?=BASE_URL."/src/templates/contact.php"?> class="block text-gray-700 hover:text-blue-600">Contact</a>
+      <a id="connexion" <?=BASE_URL."/src/templates/connexion.php"?> class="block text-gray-700 hover:text-blue-600">Connexion</a>
+      <a <?=BASE_URL."/src/templates/profile.php"?> class="block text-gray-700 hover:text-blue-600">Profil</a>
     </div>
 
   </header>
@@ -65,16 +67,11 @@ $session->set('ROLE', "administrateur");
   <!-- <main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
  p/*  $content */ ?>
   </main> -->
-   <?php
-  if ($session->get('ROLE') != 'administrateur') {
-      echo '<main class="pb-48 p-8 col-span-2 row-span-1 overflow-auto flex flex-col">
-          '.$content .'
-        </main>';
-  }
-  else if($session->get('ROLE') == 'administrateur') {?>
-    <?=$content?>
-  <?php }?>
-
+   <!--  -->
+  <main class="col-span-2 row-span-1 overflow-auto flex flex-col">
+    <?=$content?> 
+  </main>
+  
   <!-- <footer class="bg-gray-800 text-white py-3 h-fit fixed bottom-0 left-0
      w-full "> -->
   <footer class="bg-gray-800 text-white -py-2 h-[12vh] fixed bottom-0 left-0 w-full shadow-inner border-t border-gray-700 col-span-2 z-100
@@ -93,24 +90,12 @@ $session->set('ROLE', "administrateur");
         <!-- Liens -->
         <div class="flex space-x-6 text-sm">
           <a href="index.php" class="hover:text-gray-300 transition">Accueil</a>
-          <a href="#" class="hover:text-gray-300 transition">À propos</a>
-          <a href="contact.php" class="hover:text-gray-300 transition">Contact</a>
-          <a href="#" class="hover:text-gray-300 transition">FAQ</a>
+          <a href=<?=BASE_URL."/src/templates/a_propos.php"?> class="hover:text-gray-300 transition">À propos</a>
+          <a href=<?=BASE_URL."/src/templates/contact.php"?> class="hover:text-gray-300 transition">Contact</a>
+          <a href=<?=BASE_URL."/src/templates/faq.php"?> class="hover:text-gray-300 transition">FAQ</a>
         </div>
 
-        <!-- Réseaux sociaux --><!-- remplace ce path par une vraie icône -->
-        <!-- <div class="flex space-x-4">
-        <a href="#" aria-label="Facebook" class="hover:text-blue-400">
-          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-            <path d="M22 12...Z" /> 
-          </svg>
-        </a>
-        <a href="#" aria-label="Twitter" class="hover:text-blue-300">
-          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-            <path d="M24 4.5...Z" />
-          </svg>
-        </a>
-      </div> -->
+        
         
       
       </div>
@@ -129,10 +114,6 @@ $session->set('ROLE', "administrateur");
     });
   </script>
 </body>
-<!-- <footer class="bg-gray-800 text-white py-8">
-      Tasty - Food Tous droits reserves
-  </footer> -->
-<!-- fixed bottom-0 left-0 -->
 
 
 

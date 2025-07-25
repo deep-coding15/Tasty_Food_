@@ -1,11 +1,16 @@
 <?php $title = 'Tasty Food - Table des Plats'; ?>
-<?php require_once __DIR__ . '/../include/SecureSession.php';
-$session = new SecureSession();
-$message = $session->get('MESSAGE') ?? null;
-$session->remove('MESSAGE'); //on l'affiche une seule fois
+<?php include __DIR__ . "/../include/init.php";
+global $_session;
+$message = $_session->get('MESSAGE') ?? null;
+$_session->remove('MESSAGE'); //on l'affiche une seule fois
 ?>
 
-<?php if (($session->get('ROLE')) != null && $session->get('ROLE') === 'administrateur') :
+<?php 
+    global $_utilisateur;
+    //var_dump($_utilisateur);
+    //var_dump( $_session->get('utilisateur'));
+    
+    if (isset($_utilisateur['role']) && $_utilisateur['role'] === 'administrateur') :
 
     require_once __DIR__ . '/../models/plats.php';
     require_once __DIR__ . '/../../config/config.php';
@@ -14,27 +19,7 @@ $session->remove('MESSAGE'); //on l'affiche une seule fois
     <?php ob_start(); ?>
     <link rel="stylesheet" href="../../styles/dashboard.css">
 
-    <?php
-    $isError = str_contains(strtolower($message), 'échec') || str_contains(strtolower($message), 'erreur');
-    ?>
-    <?php if ($message): ?>
-        <div id="flash-message" class="<?= $isError ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' ?> block p-4 rounded relative top-16 bottom-8 shadow-md text-center w-[70%] mx-auto left-[2%]
-            transition-opacity duration-500">
-            <?= htmlspecialchars($message) ?>
-        </div>
-        <script>
-            // Exécute après chargement du DOM
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(() => {
-                    const flash = document.getElementById('flash-message');
-                    if (flash) {
-                        flash.classList.add('opacity-0'); // effet de fondu Tailwind
-                        setTimeout(() => flash.remove(), 500); // suppression après fade
-                    }
-                }, 5000);
-            });
-        </script>
-    <?php endif; ?>
+    <?php SecureSession::getMessage($message); ?>
 
     <section class="h-[80%] flex">
 
@@ -44,10 +29,11 @@ $session->remove('MESSAGE'); //on l'affiche une seule fois
             <div class="flex flex-col items-center mb-2">
                 <!-- <img src="" alt="Logo" class="w-8 h-8"> -->
                 <p class="text-xl font-bold">Tasty Food</p>
+                <p class="bg-yellow-400 text-black"><?=$_session->get('utilisateur')['role']?></p>
             </div>
             <nav>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-yellow-400">Accueil</a></li>
+                    <li><a href="<?=BASE_URL . '/src/templates/menu.php'?>" class="hover:text-yellow-400">Accueil</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Ingrédients</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Plats</a></li>
                     <li><a href="#" class="hover:text-yellow-400">Repas</a></li>
@@ -62,6 +48,7 @@ $session->remove('MESSAGE'); //on l'affiche une seule fois
         </section>
 
 
+        
         <!-- Main Content -->
         <div id="content" class="w-[100%] mx-auto   relative mt-[5%] mb-[10%] pt-16 ml-[10%] -z-5">
             <!-- Table des plats -->
@@ -304,4 +291,7 @@ $session->remove('MESSAGE'); //on l'affiche une seule fois
     <?php $content = ob_get_clean(); ?>
 
     <?php require 'layout.php'; ?>
+<?php else : ?>
+    <?php require_once __DIR__ . '/../../erreur403.php'; ?>
+    
 <?php endif; ?>
